@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
       >
         <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
           <Navigation />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 p-4 md:p-3 lg:p-0">{children}</main>
 
           <footer className="bg-gradient-to-r from-slate-900 to-blue-900 text-white px-8 py-12">
             <div className="max-w-6xl mx-auto text-center">
