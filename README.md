@@ -1,36 +1,162 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# OnClickPDF - PDF to DOCX Converter
+
+A modern, secure, and fast PDF to DOCX converter built with Next.js 16 and powered by Convert API.
+
+## Features
+
+- **Fast Conversion**: Convert PDF files to DOCX format in seconds
+- **Secure & Private**: Files are automatically deleted after 24 hours
+- **Responsive Design**: Works perfectly on desktop and mobile devices
+- **Modern UI**: Beautiful interface built with Tailwind CSS
+- **Real-time Progress**: Live conversion progress tracking
+- **Customizable Settings**: Personalize your conversion experience
+
+## Tech Stack
+
+- **Frontend**: Next.js 16, React 19, Tailwind CSS
+- **Icons**: Lucide React
+- **API**: Convert API for PDF to DOCX conversion
+- **File Handling**: Native Node.js fs operations
+- **Styling**: Tailwind CSS with custom components
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+- Convert API key (get one from [convertapi.com](https://www.convertapi.com/))
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repo-url>
+cd onclickpdf
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+# Copy the example environment file
+cp env.example .env.local
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Edit .env.local and add your Convert API key:
+CONVERT_API_PRODUCTION_KEY=your_convert_api_key_here
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
 
-## Learn More
+4. Create required directories:
+```bash
+mkdir uploads downloads
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Run the development server:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+onclickpdf/
+├── app/
+│   ├── api/
+│   │   ├── upload/          # File upload endpoint
+│   │   ├── convert/         # PDF to DOCX conversion
+│   │   ├── download/        # File download endpoint
+│   │   └── status/          # Conversion status check
+│   ├── components/
+│   │   ├── Navigation.jsx   # Main navigation component
+│   │   ├── FileUploader.jsx # Drag & drop file uploader
+│   │   └── ConversionStatus.jsx # Conversion progress & results
+│   ├── about/
+│   │   └── page.jsx         # About page
+│   ├── settings/
+│   │   └── page.jsx         # Settings page
+│   ├── layout.js            # Root layout
+│   ├── page.js              # Home page
+│   └── globals.css          # Global styles
+├── uploads/                 # Temporary PDF storage
+├── downloads/               # Converted DOCX files
+└── public/                  # Static assets
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## API Endpoints
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `POST /api/upload` - Upload PDF file
+- `POST /api/convert/[fileId]` - Convert PDF to DOCX
+- `GET /api/download/[fileId]` - Download converted DOCX file
+- `GET /api/status/[fileId]` - Check conversion status
+
+## Features Overview
+
+### File Upload
+- Drag & drop interface
+- File validation (PDF only, 50MB max)
+- Progress indicators
+- Error handling
+
+### Conversion Process
+- Real-time progress tracking
+- Convert API integration
+- Automatic file cleanup
+- Status monitoring
+
+### User Interface
+- Modern, responsive design
+- Dark/light theme support
+- Settings customization
+- Mobile-friendly navigation
+
+## Configuration
+
+### Convert API Setup
+1. Sign up at [convertapi.com](https://www.convertapi.com/)
+2. Get your API key from the dashboard
+3. Add it to your `.env.local` file
+
+### File Limits
+- Maximum file size: 50MB
+- Supported input: PDF files only
+- Output format: Microsoft Word DOCX
+
+## Deployment
+
+### Vercel (Recommended)
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy automatically
+
+### Other Platforms
+The app can be deployed on any platform that supports Next.js:
+- Netlify
+- Railway
+- DigitalOcean App Platform
+- AWS Amplify
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For support or questions:
+- Create an issue on GitHub
+- Check the documentation
+- Visit [convertapi.com](https://www.convertapi.com/) for API-related questions
