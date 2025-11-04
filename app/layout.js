@@ -2,7 +2,7 @@ import { Poppins, Oswald } from "next/font/google";
 import "./globals.css";
 import Navigation from "./components/Navigation";
 import { Toaster } from "react-hot-toast";
-import { Analytics } from "@vercel/analytics/react"; // ✅ correct import path
+// import { Analytics } from "@vercel/analytics/react"; // ✅ correct import path
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -99,7 +99,7 @@ export default function RootLayout({ children }) {
         />
 
         {/* ✅ Place Analytics here */}
-        <Analytics />
+        {/* <Analytics /> */}
       </body>
     </html>
   );

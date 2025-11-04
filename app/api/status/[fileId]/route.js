@@ -15,17 +15,24 @@ export async function GET(request, { params }) {
     const outputExists = existsSync(outputPath);
     
     let status = 'not_found';
+    let downloadUrl = null;
+    
     if (inputExists && outputExists) {
       status = 'completed';
+      downloadUrl = `/api/download/${fileId}`;
     } else if (inputExists) {
-      status = 'uploaded';
+      status = 'processing';
     }
     
     return NextResponse.json({
       fileId: fileId,
       status: status,
       inputExists: inputExists,
-      outputExists: outputExists
+      outputExists: outputExists,
+      downloadUrl: downloadUrl,
+      message: status === 'completed' ? 'File ready for download' : 
+               status === 'processing' ? 'Conversion in progress...' : 
+               'File not found'
     });
   } catch (error) {
     console.error('Status check error:', error);

@@ -10,16 +10,24 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",
-    "form-data": "^4.0.1",
+    "docx": "^9.5.1",
+    "form-data": "^4.0.4",
     "fs-extra": "^11.2.0",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.460.0",
+    "mammoth": "^1.6.0",
     "multer": "^1.4.5-lts.1",
     "next": "16.0.0",
+    "pdf-lib": "^1.17.1",
+    "pdf2pic": "^3.1.1",
     "pdfjs-dist": "^5.4.296",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.6.0",
-    "react-pdf": "^10.2.0"
+    "react-pdf": "^10.2.0",
+    "sharp": "^0.33.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
