@@ -17,14 +17,137 @@ const oswald = Oswald({
 });
 
 export const metadata = {
-  title: "OnClick PDF - Convert PDF to DOCX Instantly",
-  description:
-    "Transform your PDF documents to DOCX format in seconds. Fast, secure, and reliable conversion with professional results.",
+  title: "PDFClub – Free PDF to Word, Merge & Compress Tools",
+  description: "Convert, merge, compress, and edit PDFs instantly. PDFClub offers 100% free, secure online PDF tools with no signup required.",
+  keywords: "pdf, pdf to word, compress pdf, merge pdf, pdf tools online, free pdf converter, split pdf, pdf editor, document converter",
+  authors: [{ name: "PDFClub" }],
+  creator: "PDFClub",
+  publisher: "PDFClub",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://pdfclub.online'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: "PDFClub – Free PDF Tools",
+    description: "Fast, free, and private PDF tools online. Convert PDF to Word, compress, merge, and split documents instantly.",
+    url: 'https://pdfclub.online',
+    siteName: 'PDFClub',
+    images: [
+      {
+        url: 'https://pdfclub.online/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'PDFClub - Free PDF Tools Online',
+      }
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "PDFClub – Free PDF Tools",
+    description: "Convert and manage PDFs instantly online. Fast, free, and secure.",
+    images: ['https://pdfclub.online/og-image.png'],
+    creator: '@pdfclub',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+    yahoo: 'your-yahoo-verification-code',
+  },
 };
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "PDFClub",
+    "description": "Free online PDF tools for everyone. Convert PDF to Word, compress PDFs, merge & split documents.",
+    "url": "https://pdfclub.online",
+    "logo": "https://pdfclub.online/og-image.png",
+    "sameAs": [
+      "https://twitter.com/pdfclub",
+      "https://facebook.com/pdfclub",
+      "https://linkedin.com/company/pdfclub"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "availableLanguage": "English"
+    },
+    "serviceType": "PDF Tools",
+    "areaServed": "Worldwide",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free PDF conversion and editing tools",
+      "availability": "https://schema.org/InStock"
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "PDF Tools",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "PDF to Word Conversion",
+            "description": "Convert PDF documents to editable Word format"
+          }
+        },
+        {
+          "@type": "Offer", 
+          "itemOffered": {
+            "@type": "Service",
+            "name": "PDF Compression",
+            "description": "Reduce PDF file size while maintaining quality"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service", 
+            "name": "PDF Merge",
+            "description": "Combine multiple PDF files into one document"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "PDF Split", 
+            "description": "Split PDF documents into separate pages or sections"
+          }
+        }
+      ]
+    }
+  };
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${poppins.variable} ${oswald.variable} antialiased font-poppins`}
       >
