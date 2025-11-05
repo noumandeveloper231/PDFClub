@@ -6,6 +6,7 @@ export default {
   changefreq: 'daily',
   priority: 0.8,
   exclude: ['/api/*', '/temp/*', '/uploads/*', '/downloads/*'],
+  generateIndexSitemap: false,
   robotsTxtOptions: {
     policies: [
       {
