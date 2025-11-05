@@ -1,5 +1,5 @@
 /** @type {import('next-sitemap').IConfig} */
-module.exports = {
+export default {
   siteUrl: 'https://pdfclub.online',
   generateRobotsTxt: true,
   sitemapSize: 5000,
@@ -14,12 +14,8 @@ module.exports = {
         disallow: ['/api/', '/temp/', '/uploads/', '/downloads/'],
       },
     ],
-    additionalSitemaps: [
-      'https://pdfclub.online/sitemap.xml',
-    ],
   },
   transform: async (config, path) => {
-    // Custom priority for different pages
     const customPriorities = {
       '/': 1.0,
       '/tools/convert': 0.9,
