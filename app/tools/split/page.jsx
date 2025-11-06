@@ -2,11 +2,19 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Document, Page, pdfjs } from 'react-pdf';
-import { Scissors, Upload, Download, FileText, Eye, Check, Plus } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { Scissors, Upload, Download, FileText, Eye, Check, Plus, ZoomIn, ZoomOut, Archive } from 'lucide-react';
 
-// Configure PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+// Dynamically import PDF components to prevent SSR issues
+const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Document })), {
+  ssr: false,
+  loading: () => <div className="animate-pulse bg-gray-200 w-full h-full rounded"></div>
+});
+
+const Page = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Page })), {
+  ssr: false,
+  loading: () => <div className="animate-pulse bg-gray-200 w-full h-full rounded"></div>
+});
 
 export default function SplitPDF() {
   const [file, setFile] = useState(null);
@@ -25,6 +33,20 @@ export default function SplitPDF() {
   const [rangeStart, setRangeStart] = useState(1);
   const [rangeEnd, setRangeEnd] = useState(1);
   const [extractMode, setExtractMode] = useState('select'); // 'all', 'select'
+  const [isClient, setIsClient] = useState(false);
+  const [thumbnailSize, setThumbnailSize] = useState(150); // Default thumbnail width
+  const [isDownloadingZip, setIsDownloadingZip] = useState(false);
+
+  // Configure PDF.js worker on client side only
+  useEffect(() => {
+    setIsClient(true);
+    if (typeof window !== 'undefined') {
+      import('react-pdf').then((pdfjs) => {
+        // Use the worker file from public directory
+        pdfjs.pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+      });
+    }
+  }, []);
 
   const onDrop = useCallback(async (acceptedFiles) => {
     const pdfFile = acceptedFiles.find(file => file.type === 'application/pdf');
@@ -84,6 +106,64 @@ export default function SplitPDF() {
       newSelected.add(i);
     }
     setSelectedPages(newSelected);
+  };
+
+  const selectAllPages = () => {
+    if (pdfInfo) {
+      const allPages = new Set();
+      for (let i = 1; i <= pdfInfo.pageCount; i++) {
+        allPages.add(i);
+      }
+      setSelectedPages(allPages);
+    }
+  };
+
+  const clearSelection = () => {
+    setSelectedPages(new Set());
+  };
+
+  const downloadAsZip = async () => {
+    if (downloadUrls.length === 0) return;
+    
+    setIsDownloadingZip(true);
+    try {
+      // Import JSZip dynamically
+      const JSZip = (await import('jszip')).default;
+      const zip = new JSZip();
+
+      // Download all files and add to zip
+      for (let i = 0; i < downloadUrls.length; i++) {
+        const url = downloadUrls[i];
+        const response = await fetch(url);
+        const blob = await response.blob();
+        zip.file(`split_${i + 1}.pdf`, blob);
+      }
+
+      // Generate zip file
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      
+      // Download zip file
+      const downloadUrl = URL.createObjectURL(zipBlob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `${file.name.replace('.pdf', '')}_split.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error('Error creating zip file:', error);
+      alert('Error creating zip file. Please try again.');
+    } finally {
+      setIsDownloadingZip(false);
+    }
+  };
+
+  const handleKeyDown = (event, pageNum) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      togglePageSelection(pageNum);
+    }
   };
 
   const splitPDF = async () => {
@@ -242,79 +322,150 @@ export default function SplitPDF() {
                   </div>
 
                   {/* Page Previews Grid */}
-                  {splitMode === 'pages' && (
+                  {splitMode === 'pages' && isClient && (
                     <div className="mb-6">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Page Previews</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900">Page Previews</h3>
+                        <div className="flex items-center gap-2">
+                          {/* Zoom Controls */}
+                          <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+                            <button
+                              onClick={() => setThumbnailSize(Math.max(100, thumbnailSize - 25))}
+                              className="p-1 hover:bg-white rounded transition-colors"
+                              aria-label="Decrease thumbnail size"
+                              title="Zoom out"
+                            >
+                              <ZoomOut size={16} />
+                            </button>
+                            <span className="text-xs text-gray-600 px-2">{Math.round((thumbnailSize / 150) * 100)}%</span>
+                            <button
+                              onClick={() => setThumbnailSize(Math.min(250, thumbnailSize + 25))}
+                              className="p-1 hover:bg-white rounded transition-colors"
+                              aria-label="Increase thumbnail size"
+                              title="Zoom in"
+                            >
+                              <ZoomIn size={16} />
+                            </button>
+                          </div>
+                          {/* Selection Controls */}
+                          <button
+                            onClick={selectAllPages}
+                            className="px-3 py-1 text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg transition-colors"
+                            aria-label="Select all pages"
+                          >
+                            Select All
+                          </button>
+                          <button
+                            onClick={clearSelection}
+                            className="px-3 py-1 text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
+                            aria-label="Clear page selection"
+                          >
+                            Clear
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div 
+                        className="grid gap-4 max-h-96 overflow-y-auto"
+                        style={{
+                          gridTemplateColumns: `repeat(auto-fill, minmax(${thumbnailSize}px, 1fr))`
+                        }}
+                        role="grid"
+                        aria-label="PDF page thumbnails"
+                      >
                         {pdfInfo && Array.from({ length: pdfInfo.pageCount }, (_, i) => i + 1).map((pageNum) => (
                           <div
                             key={pageNum}
-                            className={`relative border-2 rounded-lg cursor-pointer transition-all ${
+                            className={`relative border-2 rounded-lg cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                               selectedPages.has(pageNum)
-                                ? 'border-red-500 bg-red-50'
-                                : 'border-gray-200 hover:border-gray-300'
+                                ? 'border-red-500 bg-red-50 shadow-md'
+                                : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                             }`}
                             onClick={() => togglePageSelection(pageNum)}
+                            onKeyDown={(e) => handleKeyDown(e, pageNum)}
+                            tabIndex={0}
+                            role="gridcell"
+                            aria-label={`Page ${pageNum}${selectedPages.has(pageNum) ? ', selected' : ''}`}
+                            aria-selected={selectedPages.has(pageNum)}
                           >
                             <div className="aspect-[3/4] p-2">
-                              <Document file={pdfData} className="w-full h-full">
-                                <Page
-                                  pageNumber={pageNum}
-                                  width={120}
-                                  renderTextLayer={false}
-                                  renderAnnotationLayer={false}
-                                  className="w-full h-full"
-                                />
-                              </Document>
+                              {pdfData && (
+                                <Document file={pdfData} className="w-full h-full">
+                                  <Page
+                                    pageNumber={pageNum}
+                                    width={thumbnailSize - 16}
+                                    renderTextLayer={false}
+                                    renderAnnotationLayer={false}
+                                    className="w-full h-full"
+                                  />
+                                </Document>
+                              )}
                             </div>
                             <div className="absolute bottom-2 left-2 right-2 text-center">
-                              <span className="bg-white px-2 py-1 rounded text-xs font-medium text-gray-700">
+                              <span className="bg-white px-2 py-1 rounded text-xs font-medium text-gray-700 shadow-sm">
                                 {pageNum}
                               </span>
                             </div>
                             {selectedPages.has(pageNum) && (
-                              <div className="absolute top-2 right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+                              <div className="absolute top-2 right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow-md">
                                 <Check size={14} className="text-white" />
                               </div>
                             )}
                           </div>
                         ))}
                       </div>
+                      
+                      {selectedPages.size > 0 && (
+                        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                          <p className="text-sm text-blue-800">
+                            <strong>{selectedPages.size}</strong> page{selectedPages.size !== 1 ? 's' : ''} selected
+                            {selectedPages.size > 1 && (
+                              <span className="ml-2 text-xs">
+                                (Pages: {Array.from(selectedPages).sort((a, b) => a - b).join(', ')})
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
                   {/* Range Preview */}
-                  {splitMode === 'range' && pdfInfo && (
+                  {splitMode === 'range' && pdfInfo && isClient && (
                     <div className="mb-6">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">Range Preview</h3>
                       <div className="flex gap-4 items-center mb-4">
-                        <div className="aspect-[3/4] w-32 border-2 border-gray-200 rounded-lg p-2">
-                          <Document file={pdfData} className="w-full h-full">
-                            <Page
-                              pageNumber={rangeStart}
-                              width={100}
-                              renderTextLayer={false}
-                              renderAnnotationLayer={false}
-                              className="w-full h-full"
-                            />
-                          </Document>
+                        <div className="aspect-[3/4] w-40 border-2 border-gray-200 rounded-lg p-2">
+                          {pdfData && (
+                            <Document file={pdfData} className="w-full h-full">
+                              <Page
+                                pageNumber={rangeStart}
+                                width={140}
+                                renderTextLayer={false}
+                                renderAnnotationLayer={false}
+                                className="w-full h-full"
+                              />
+                            </Document>
+                          )}
                           <div className="text-center mt-1">
-                            <span className="text-xs font-medium text-gray-700">{rangeStart}</span>
+                            <span className="text-sm font-medium text-gray-700">Page {rangeStart}</span>
                           </div>
                         </div>
-                        <div className="text-2xl text-gray-400">...</div>
-                        <div className="aspect-[3/4] w-32 border-2 border-gray-200 rounded-lg p-2">
-                          <Document file={pdfData} className="w-full h-full">
-                            <Page
-                              pageNumber={rangeEnd}
-                              width={100}
-                              renderTextLayer={false}
-                              renderAnnotationLayer={false}
-                              className="w-full h-full"
-                            />
-                          </Document>
+                        <div className="text-2xl text-gray-400 mx-4">...</div>
+                        <div className="aspect-[3/4] w-40 border-2 border-gray-200 rounded-lg p-2">
+                          {pdfData && (
+                            <Document file={pdfData} className="w-full h-full">
+                              <Page
+                                pageNumber={rangeEnd}
+                                width={140}
+                                renderTextLayer={false}
+                                renderAnnotationLayer={false}
+                                className="w-full h-full"
+                              />
+                            </Document>
+                          )}
                           <div className="text-center mt-1">
-                            <span className="text-xs font-medium text-gray-700">{rangeEnd}</span>
+                            <span className="text-sm font-medium text-gray-700">Page {rangeEnd}</span>
                           </div>
                         </div>
                       </div>
@@ -539,13 +690,34 @@ export default function SplitPDF() {
                 <p className="text-green-700 mb-4">
                   Your PDF has been split into {downloadUrls.length} files.
                 </p>
-                <button
-                  onClick={downloadAll}
-                  className="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors mb-4"
-                >
-                  <Download size={20} className="mr-2" />
-                  Download All Files
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
+                  <button
+                    onClick={downloadAll}
+                    className="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+                    aria-label="Download all split PDF files individually"
+                  >
+                    <Download size={20} className="mr-2" />
+                    Download All Files
+                  </button>
+                  <button
+                    onClick={downloadAsZip}
+                    disabled={isDownloadingZip}
+                    className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-lg transition-colors"
+                    aria-label="Download all split PDF files as a ZIP archive"
+                  >
+                    {isDownloadingZip ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                        Creating ZIP...
+                      </>
+                    ) : (
+                      <>
+                        <Archive size={20} className="mr-2" />
+                        Download as ZIP
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
