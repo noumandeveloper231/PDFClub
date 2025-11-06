@@ -1,31 +1,42 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Scissors, Upload, Download, FileText, Eye, Plus, Minus } from 'lucide-react';
+import { Document, Page, pdfjs } from 'react-pdf';
+import { Scissors, Upload, Download, FileText, Eye, Check, Plus } from 'lucide-react';
+
+// Configure PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 export default function SplitPDF() {
   const [file, setFile] = useState(null);
-  const [splitMethod, setSplitMethod] = useState('range'); // 'range', 'pages', 'size'
+  const [splitMethod, setSplitMethod] = useState('pages'); // 'pages', 'range', 'size'
   const [splitOptions, setSplitOptions] = useState({
     pagesPerFile: 1,
     pageRanges: '',
-    maxSizeMB: 10,
-    selectedPages: new Set(),
-    customRanges: [{ from: 1, to: 1 }]
+    maxSizeMB: 10
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [downloadUrls, setDownloadUrls] = useState([]);
   const [pdfInfo, setPdfInfo] = useState(null);
-  const [thumbnails, setThumbnails] = useState([]);
-  const [loadingThumbnails, setLoadingThumbnails] = useState(false);
+  const [pdfData, setPdfData] = useState(null);
+  const [selectedPages, setSelectedPages] = useState(new Set());
+  const [splitMode, setSplitMode] = useState('range'); // 'range', 'pages', 'size'
+  const [rangeStart, setRangeStart] = useState(1);
+  const [rangeEnd, setRangeEnd] = useState(1);
+  const [extractMode, setExtractMode] = useState('select'); // 'all', 'select'
 
   const onDrop = useCallback(async (acceptedFiles) => {
     const pdfFile = acceptedFiles.find(file => file.type === 'application/pdf');
     if (pdfFile) {
       setFile(pdfFile);
-      // Get PDF info (page count)
+      // Get PDF info and preview data
       await getPdfInfo(pdfFile);
+      // Create object URL for PDF rendering
+      const url = URL.createObjectURL(pdfFile);
+      setPdfData(url);
+      // Reset selections
+      setSelectedPages(new Set());
     }
   }, []);
 
@@ -39,68 +50,40 @@ export default function SplitPDF() {
 
   const getPdfInfo = async (pdfFile) => {
     try {
-      setLoadingThumbnails(true);
       const formData = new FormData();
       formData.append('file', pdfFile);
 
-      // Get PDF info and thumbnails
-      const [infoResponse, thumbnailResponse] = await Promise.all([
-        fetch('/api/pdf-info', {
-          method: 'POST',
-          body: formData,
-        }),
-        fetch('/api/pdf-thumbnails', {
-          method: 'POST',
-          body: formData,
-        })
-      ]);
+      const response = await fetch('/api/pdf-preview', {
+        method: 'POST',
+        body: formData,
+      });
 
-      if (infoResponse.ok) {
-        const info = await infoResponse.json();
-        setPdfInfo(info);
-      }
-
-      if (thumbnailResponse.ok) {
-        const thumbnailData = await thumbnailResponse.json();
-        setThumbnails(thumbnailData.thumbnails || []);
+      if (response.ok) {
+        const info = await response.json();
+        setPdfInfo({ pageCount: info.pageCount });
+        setRangeEnd(info.pageCount);
       }
     } catch (error) {
       console.error('Error getting PDF info:', error);
-    } finally {
-      setLoadingThumbnails(false);
     }
   };
 
-  // Helper functions for page selection
   const togglePageSelection = (pageNum) => {
-    const newSelected = new Set(splitOptions.selectedPages);
+    const newSelected = new Set(selectedPages);
     if (newSelected.has(pageNum)) {
       newSelected.delete(pageNum);
     } else {
       newSelected.add(pageNum);
     }
-    setSplitOptions({...splitOptions, selectedPages: newSelected});
+    setSelectedPages(newSelected);
   };
 
   const addRange = () => {
-    const maxPage = pdfInfo?.pageCount || 1;
-    setSplitOptions({
-      ...splitOptions,
-      customRanges: [...splitOptions.customRanges, { from: 1, to: maxPage }]
-    });
-  };
-
-  const removeRange = (index) => {
-    if (splitOptions.customRanges.length > 1) {
-      const newRanges = splitOptions.customRanges.filter((_, i) => i !== index);
-      setSplitOptions({...splitOptions, customRanges: newRanges});
+    const newSelected = new Set(selectedPages);
+    for (let i = rangeStart; i <= rangeEnd; i++) {
+      newSelected.add(i);
     }
-  };
-
-  const updateRange = (index, field, value) => {
-    const newRanges = [...splitOptions.customRanges];
-    newRanges[index] = { ...newRanges[index], [field]: parseInt(value) || 1 };
-    setSplitOptions({...splitOptions, customRanges: newRanges});
+    setSelectedPages(newSelected);
   };
 
   const splitPDF = async () => {
@@ -110,16 +93,27 @@ export default function SplitPDF() {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('method', splitMethod);
       
-      // Prepare options based on split method
-      let options = { ...splitOptions };
-      if (splitMethod === 'pages') {
-        options.selectedPages = Array.from(splitOptions.selectedPages);
-      } else if (splitMethod === 'range') {
-        options.ranges = splitOptions.customRanges;
+      let method = splitMode;
+      let options = {};
+
+      if (splitMode === 'range') {
+        method = 'pages';
+        options.pageRanges = `${rangeStart}-${rangeEnd}`;
+      } else if (splitMode === 'pages') {
+        method = 'pages';
+        if (extractMode === 'select' && selectedPages.size > 0) {
+          const sortedPages = Array.from(selectedPages).sort((a, b) => a - b);
+          options.pageRanges = sortedPages.join(',');
+        } else {
+          options.pageRanges = `1-${pdfInfo.pageCount}`;
+        }
+      } else if (splitMode === 'size') {
+        method = 'size';
+        options.maxSizeMB = splitOptions.maxSizeMB;
       }
-      
+
+      formData.append('method', method);
       formData.append('options', JSON.stringify(options));
 
       const response = await fetch('/api/split', {
@@ -216,342 +210,321 @@ export default function SplitPDF() {
             </div>
           )}
 
-          {/* File Info and Split Options */}
-          {file && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <FileText size={24} className="text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900">{file.name}</div>
-                  <div className="text-sm text-gray-500">
-                    {formatFileSize(file.size)}
-                    {pdfInfo && ` • ${pdfInfo.pageCount} pages`}
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setFile(null);
-                    setPdfInfo(null);
-                    setDownloadUrls([]);
-                    setThumbnails([]);
-                    setSplitOptions({
-                      pagesPerFile: 1,
-                      pageRanges: '',
-                      maxSizeMB: 10,
-                      selectedPages: new Set(),
-                      customRanges: [{ from: 1, to: 1 }]
-                    });
-                  }}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  Change File
-                </button>
-              </div>
-
-              {/* Tab-based Split Method Selection */}
-              <div className="mb-6">
-                <div className="flex border-b border-gray-200">
-                  <button
-                    onClick={() => setSplitMethod('range')}
-                    className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
-                      splitMethod === 'range'
-                        ? 'border-blue-500 text-blue-600 bg-blue-50'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-blue-100 rounded flex items-center justify-center">
-                        <Scissors size={14} className="text-blue-600" />
-                      </div>
-                      Range
+          {/* PDF Preview and Split Interface */}
+          {file && pdfData && (
+            <div className="flex gap-6">
+              {/* Left Panel - PDF Preview */}
+              <div className="flex-1">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <FileText size={24} className="text-blue-600" />
                     </div>
-                  </button>
-                  <button
-                    onClick={() => setSplitMethod('pages')}
-                    className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
-                      splitMethod === 'pages'
-                        ? 'border-blue-500 text-blue-600 bg-blue-50'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-green-100 rounded flex items-center justify-center">
-                        <FileText size={14} className="text-green-600" />
-                      </div>
-                      Pages
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setSplitMethod('size')}
-                    className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
-                      splitMethod === 'size'
-                        ? 'border-blue-500 text-blue-600 bg-blue-50'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-orange-100 rounded flex items-center justify-center">
-                        <Eye size={14} className="text-orange-600" />
-                      </div>
-                      Size
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-              {/* Split Options with Visual Interface */}
-              <div className="mb-6">
-                {/* PDF Thumbnails Grid */}
-                {thumbnails.length > 0 && (
-                  <div className="mb-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <h4 className="text-sm font-medium text-gray-700">PDF Pages</h4>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900">{file.name}</div>
                       <div className="text-sm text-gray-500">
-                        {file && `${formatFileSize(file.size)} • ${pdfInfo?.pageCount || 0} pages`}
+                        {formatFileSize(file.size)}
+                        {pdfInfo && ` • ${pdfInfo.pageCount} pages`}
                       </div>
                     </div>
-                    
-                    {loadingThumbnails ? (
-                      <div className="flex items-center justify-center py-12">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                        <span className="ml-3 text-gray-600">Generating page previews...</span>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-96 overflow-y-auto p-4 bg-gray-50 rounded-lg">
-                        {thumbnails.map((thumbnail) => (
+                    <button
+                      onClick={() => {
+                        setFile(null);
+                        setPdfInfo(null);
+                        setPdfData(null);
+                        setDownloadUrls([]);
+                        setSelectedPages(new Set());
+                      }}
+                      className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                      Change File
+                    </button>
+                  </div>
+
+                  {/* Page Previews Grid */}
+                  {splitMode === 'pages' && (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Page Previews</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+                        {pdfInfo && Array.from({ length: pdfInfo.pageCount }, (_, i) => i + 1).map((pageNum) => (
                           <div
-                            key={thumbnail.pageNumber}
-                            className={`relative group cursor-pointer transition-all duration-200 ${
-                              splitMethod === 'pages' && splitOptions.selectedPages.has(thumbnail.pageNumber)
-                                ? 'ring-2 ring-blue-500 bg-blue-50'
-                                : 'hover:ring-2 hover:ring-gray-300'
+                            key={pageNum}
+                            className={`relative border-2 rounded-lg cursor-pointer transition-all ${
+                              selectedPages.has(pageNum)
+                                ? 'border-red-500 bg-red-50'
+                                : 'border-gray-200 hover:border-gray-300'
                             }`}
-                            onClick={() => splitMethod === 'pages' && togglePageSelection(thumbnail.pageNumber)}
+                            onClick={() => togglePageSelection(pageNum)}
                           >
-                            <div className="aspect-[3/4] bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-                              <embed
-                                src={thumbnail.thumbnailUrl}
-                                type="application/pdf"
-                                className="w-full h-full object-cover"
-                              />
+                            <div className="aspect-[3/4] p-2">
+                              <Document file={pdfData} className="w-full h-full">
+                                <Page
+                                  pageNumber={pageNum}
+                                  width={120}
+                                  renderTextLayer={false}
+                                  renderAnnotationLayer={false}
+                                  className="w-full h-full"
+                                />
+                              </Document>
                             </div>
-                            <div className="absolute bottom-1 left-1 right-1 bg-black bg-opacity-75 text-white text-xs text-center py-1 rounded">
-                              {thumbnail.pageNumber}
+                            <div className="absolute bottom-2 left-2 right-2 text-center">
+                              <span className="bg-white px-2 py-1 rounded text-xs font-medium text-gray-700">
+                                {pageNum}
+                              </span>
                             </div>
-                            {splitMethod === 'pages' && (
-                              <div className={`absolute top-2 right-2 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                                splitOptions.selectedPages.has(thumbnail.pageNumber)
-                                  ? 'bg-blue-500 border-blue-500'
-                                  : 'bg-white border-gray-300'
-                              }`}>
-                                {splitOptions.selectedPages.has(thumbnail.pageNumber) && (
-                                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                  </svg>
-                                )}
+                            {selectedPages.has(pageNum) && (
+                              <div className="absolute top-2 right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+                                <Check size={14} className="text-white" />
                               </div>
                             )}
                           </div>
                         ))}
                       </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Method-specific Controls */}
-                {splitMethod === 'range' && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium text-gray-700">Range mode:</h4>
-                      <div className="flex gap-2">
-                        <button
-                          className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-full border border-red-200"
-                        >
-                          Custom ranges
-                        </button>
-                        <button
-                          className="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-full border border-gray-200"
-                        >
-                          Fixed ranges
-                        </button>
-                      </div>
                     </div>
-                    
-                    {splitOptions.customRanges.map((range, index) => (
-                      <div key={index} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                        <span className="text-sm font-medium text-gray-700">Range {index + 1}</span>
-                        <div className="flex items-center gap-2">
-                          <label className="text-sm text-gray-600">from page</label>
-                          <input
-                            type="number"
-                            min="1"
-                            max={pdfInfo?.pageCount || 1}
-                            value={range.from}
-                            onChange={(e) => updateRange(index, 'from', e.target.value)}
-                            className="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
-                          <label className="text-sm text-gray-600">to</label>
-                          <input
-                            type="number"
-                            min="1"
-                            max={pdfInfo?.pageCount || 1}
-                            value={range.to}
-                            onChange={(e) => updateRange(index, 'to', e.target.value)}
-                            className="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
+                  )}
+
+                  {/* Range Preview */}
+                  {splitMode === 'range' && pdfInfo && (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Range Preview</h3>
+                      <div className="flex gap-4 items-center mb-4">
+                        <div className="aspect-[3/4] w-32 border-2 border-gray-200 rounded-lg p-2">
+                          <Document file={pdfData} className="w-full h-full">
+                            <Page
+                              pageNumber={rangeStart}
+                              width={100}
+                              renderTextLayer={false}
+                              renderAnnotationLayer={false}
+                              className="w-full h-full"
+                            />
+                          </Document>
+                          <div className="text-center mt-1">
+                            <span className="text-xs font-medium text-gray-700">{rangeStart}</span>
+                          </div>
                         </div>
-                        {splitOptions.customRanges.length > 1 && (
-                          <button
-                            onClick={() => removeRange(index)}
-                            className="p-1 text-red-500 hover:bg-red-100 rounded"
-                          >
-                            <Minus size={16} />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                    
-                    <button
-                      onClick={addRange}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
-                    >
-                      <Plus size={16} />
-                      Add Range
-                    </button>
-                    
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id="mergeRanges"
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <label htmlFor="mergeRanges" className="text-sm text-gray-600">
-                        Merge all ranges in one PDF file.
-                      </label>
-                    </div>
-                  </div>
-                )}
-
-                {splitMethod === 'pages' && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium text-gray-700">Extract mode:</h4>
-                      <div className="flex gap-2">
-                        <button className="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-full border border-gray-200">
-                          Extract all pages
-                        </button>
-                        <button className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-full border border-red-200">
-                          Select pages
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Pages to extract:
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="example: 1,5,8"
-                        value={Array.from(splitOptions.selectedPages).sort((a, b) => a - b).join(',')}
-                        onChange={(e) => {
-                          const pages = e.target.value.split(',').map(p => parseInt(p.trim())).filter(p => !isNaN(p));
-                          setSplitOptions({...splitOptions, selectedPages: new Set(pages)});
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id="mergePages"
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <label htmlFor="mergePages" className="text-sm text-gray-600">
-                        Merge extracted pages into one PDF file.
-                      </label>
-                    </div>
-                    
-                    <div className="text-sm text-blue-600 bg-blue-50 p-3 rounded-lg">
-                      Selected pages will be converted into separate files.
-                    </div>
-                  </div>
-                )}
-
-                {splitMethod === 'size' && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium text-gray-700">Original file size: {file && formatFileSize(file.size)}</h4>
-                      <div className="text-sm text-gray-500">Total pages: {pdfInfo?.pageCount || 0}</div>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Maximum size per file:
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          min="1"
-                          max="100"
-                          value={splitOptions.maxSizeMB}
-                          onChange={(e) => setSplitOptions({...splitOptions, maxSizeMB: parseInt(e.target.value)})}
-                          className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <div className="flex">
-                          <button className="px-3 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded-l-lg">
-                            KB
-                          </button>
-                          <button className="px-3 py-2 text-sm bg-blue-100 text-blue-700 border border-blue-300 rounded-r-lg">
-                            MB
-                          </button>
+                        <div className="text-2xl text-gray-400">...</div>
+                        <div className="aspect-[3/4] w-32 border-2 border-gray-200 rounded-lg p-2">
+                          <Document file={pdfData} className="w-full h-full">
+                            <Page
+                              pageNumber={rangeEnd}
+                              width={100}
+                              renderTextLayer={false}
+                              renderAnnotationLayer={false}
+                              className="w-full h-full"
+                            />
+                          </Document>
+                          <div className="text-center mt-1">
+                            <span className="text-xs font-medium text-gray-700">{rangeEnd}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="text-sm text-blue-600 bg-blue-50 p-3 rounded-lg">
-                      This PDF will be split into files no larger than {splitOptions.maxSizeMB} MB each.
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id="allowCompression"
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <label htmlFor="allowCompression" className="text-sm text-gray-600">
-                        Allow compression
-                      </label>
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
-              {/* Split Button */}
-              <div className="text-center">
-                <button
-                  onClick={splitPDF}
-                  disabled={isProcessing || (splitMethod === 'pages' && !splitOptions.pageRanges.trim())}
-                  className="inline-flex items-center px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-lg transition-colors"
-                >
-                  {isProcessing ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Splitting PDF...
-                    </>
-                  ) : (
-                    <>
-                      <Scissors size={20} className="mr-2" />
-                      Split PDF
-                    </>
+              {/* Right Panel - Split Controls */}
+              <div className="w-80">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6">
+                  <h2 className="text-xl font-bold text-gray-900 mb-6">Split</h2>
+
+                  {/* Split Mode Tabs */}
+                  <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
+                    <button
+                      onClick={() => setSplitMode('range')}
+                      className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                        splitMode === 'range'
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Range
+                    </button>
+                    <button
+                      onClick={() => setSplitMode('pages')}
+                      className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                        splitMode === 'pages'
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Pages
+                    </button>
+                    <button
+                      onClick={() => setSplitMode('size')}
+                      className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                        splitMode === 'size'
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Size
+                    </button>
+                  </div>
+
+                  {/* Range Mode Controls */}
+                  {splitMode === 'range' && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Range mode:
+                        </label>
+                        <div className="flex gap-2">
+                          <button className="px-4 py-2 bg-red-100 text-red-800 rounded-lg text-sm font-medium">
+                            Custom ranges
+                          </button>
+                          <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium">
+                            Fixed ranges
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Range 1
+                        </label>
+                        <div className="flex gap-2 items-center">
+                          <div className="flex-1">
+                            <label className="block text-xs text-gray-500 mb-1">from page</label>
+                            <input
+                              type="number"
+                              min="1"
+                              max={pdfInfo?.pageCount || 1}
+                              value={rangeStart}
+                              onChange={(e) => setRangeStart(parseInt(e.target.value) || 1)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                            />
+                          </div>
+                          <div className="text-gray-400 mt-6">to</div>
+                          <div className="flex-1">
+                            <label className="block text-xs text-gray-500 mb-1">to</label>
+                            <input
+                              type="number"
+                              min={rangeStart}
+                              max={pdfInfo?.pageCount || 1}
+                              value={rangeEnd}
+                              onChange={(e) => setRangeEnd(parseInt(e.target.value) || 1)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={addRange}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-red-300 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Plus size={16} />
+                        Add Range
+                      </button>
+                    </div>
                   )}
-                </button>
+
+                  {/* Pages Mode Controls */}
+                  {splitMode === 'pages' && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Extract mode:
+                        </label>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setExtractMode('all')}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                              extractMode === 'all'
+                                ? 'bg-red-100 text-red-800'
+                                : 'text-gray-600 hover:bg-gray-100'
+                            }`}
+                          >
+                            Extract all pages
+                          </button>
+                          <button
+                            onClick={() => setExtractMode('select')}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                              extractMode === 'select'
+                                ? 'bg-red-100 text-red-800'
+                                : 'text-gray-600 hover:bg-gray-100'
+                            }`}
+                          >
+                            Select pages
+                          </button>
+                        </div>
+                      </div>
+                      {extractMode === 'select' && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Pages to extract:
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="example: 1,5-8"
+                            value={Array.from(selectedPages).sort((a, b) => a - b).join(',')}
+                            readOnly
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            Click on pages above to select them
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Size Mode Controls */}
+                  {splitMode === 'size' && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Original file size: {formatFileSize(file.size)}
+                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Total pages: {pdfInfo?.pageCount || 0}
+                        </label>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Maximum size per file:
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="number"
+                            min="1"
+                            value={splitOptions.maxSizeMB}
+                            onChange={(e) => setSplitOptions({...splitOptions, maxSizeMB: parseInt(e.target.value) || 1})}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                          />
+                          <select className="px-3 py-2 border border-gray-300 rounded-lg">
+                            <option>MB</option>
+                          </select>
+                        </div>
+                        <p className="text-xs text-blue-600 mt-2 bg-blue-50 p-2 rounded">
+                          This PDF will be split into files no larger than {splitOptions.maxSizeMB} MB each.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Split Button */}
+                  <button
+                    onClick={splitPDF}
+                    disabled={isProcessing || (splitMode === 'pages' && extractMode === 'select' && selectedPages.size === 0)}
+                    className="w-full mt-6 px-6 py-3 bg-red-500 hover:bg-red-600 disabled:bg-gray-400 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Splitting PDF...
+                      </>
+                    ) : (
+                      <>
+                        <Scissors size={20} />
+                        Split PDF
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           )}
+
 
           {/* Download Section */}
           {downloadUrls.length > 0 && (
