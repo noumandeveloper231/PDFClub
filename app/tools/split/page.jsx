@@ -131,12 +131,15 @@ export default function SplitPDF() {
       const JSZip = (await import('jszip')).default;
       const zip = new JSZip();
 
-      // Download all files and add to zip
+      // Add all files to zip
       for (let i = 0; i < downloadUrls.length; i++) {
-        const url = downloadUrls[i];
-        const response = await fetch(url);
+        const fileItem = downloadUrls[i];
+        const filename = fileItem.name || `split_${i + 1}.pdf`;
+        
+        // Convert data URL to blob
+        const response = await fetch(fileItem.url);
         const blob = await response.blob();
-        zip.file(`split_${i + 1}.pdf`, blob);
+        zip.file(filename, blob);
       }
 
       // Generate zip file
@@ -203,7 +206,13 @@ export default function SplitPDF() {
 
       if (response.ok) {
         const result = await response.json();
-        setDownloadUrls(result.files);
+        // Convert file data objects to download URLs
+        const urls = result.files.map(file => ({
+          url: file.data,
+          name: file.name,
+          size: file.size
+        }));
+        setDownloadUrls(urls);
       } else {
         throw new Error('Split failed');
       }
@@ -223,19 +232,31 @@ export default function SplitPDF() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const downloadFile = async (url, filename) => {
+  const downloadFile = async (fileData, filename) => {
     try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const downloadUrl = URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(downloadUrl);
+      // Handle both old URL format and new data URL format
+      if (typeof fileData === 'string') {
+        // New format: data URL
+        const a = document.createElement('a');
+        a.href = fileData;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        // Old format: fetch from URL
+        const response = await fetch(fileData);
+        const blob = await response.blob();
+        const downloadUrl = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(downloadUrl);
+      }
     } catch (error) {
       console.error('Error downloading file:', error);
     }
@@ -243,9 +264,9 @@ export default function SplitPDF() {
 
   const downloadAll = async () => {
     for (let i = 0; i < downloadUrls.length; i++) {
-      const url = downloadUrls[i];
-      const filename = `split_${i + 1}.pdf`;
-      await downloadFile(url, filename);
+      const fileItem = downloadUrls[i];
+      const filename = fileItem.name || `split_${i + 1}.pdf`;
+      await downloadFile(fileItem.url, filename);
       // Add small delay between downloads
       await new Promise(resolve => setTimeout(resolve, 500));
     }
@@ -721,19 +742,21 @@ export default function SplitPDF() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {downloadUrls.map((url, index) => (
+                {downloadUrls.map((fileItem, index) => (
                   <div key={index} className="bg-white rounded-lg p-4 border border-green-200">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                         <FileText size={20} className="text-green-600" />
                       </div>
                       <div className="flex-1">
-                        <div className="font-medium text-gray-900">split_{index + 1}.pdf</div>
-                        <div className="text-sm text-gray-500">Split file {index + 1}</div>
+                        <div className="font-medium text-gray-900">{fileItem.name || `split_${index + 1}.pdf`}</div>
+                        <div className="text-sm text-gray-500">
+                          {fileItem.size ? formatFileSize(fileItem.size) : `Split file ${index + 1}`}
+                        </div>
                       </div>
                     </div>
                     <button
-                      onClick={() => downloadFile(url, `split_${index + 1}.pdf`)}
+                      onClick={() => downloadFile(fileItem.url, fileItem.name || `split_${index + 1}.pdf`)}
                       className="w-full px-4 py-2 bg-green-100 hover:bg-green-200 text-green-800 font-medium rounded-lg transition-colors"
                     >
                       Download

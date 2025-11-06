@@ -83,25 +83,21 @@ export async function POST(request) {
         }
       }
 
-      // Create temporary files and return URLs
-      const tempDir = path.join(process.cwd(), 'temp');
-      if (!fs.existsSync(tempDir)) {
-        fs.mkdirSync(tempDir, { recursive: true });
-      }
-
-      const fileUrls = [];
-      const timestamp = Date.now();
+      // Return files as base64 data URLs for direct download
+      const fileData = [];
       
       for (let i = 0; i < splitPdfs.length; i++) {
-        const fileName = `split_${timestamp}_${i + 1}.pdf`;
-        const filePath = path.join(tempDir, fileName);
-        fs.writeFileSync(filePath, splitPdfs[i]);
-        fileUrls.push(`/api/download-temp/${fileName}`);
+        const base64Data = Buffer.from(splitPdfs[i]).toString('base64');
+        fileData.push({
+          name: `split_${i + 1}.pdf`,
+          data: `data:application/pdf;base64,${base64Data}`,
+          size: splitPdfs[i].length
+        });
       }
 
       return NextResponse.json({
         success: true,
-        files: fileUrls,
+        files: fileData,
         count: splitPdfs.length
       });
 
