@@ -1,22 +1,35 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Layers, Upload, Download, X, ArrowUp, ArrowDown, FileText } from 'lucide-react';
+import { Layers, Upload, Download, X, ArrowUp, ArrowDown, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { toast, Toaster } from 'sonner';
 
 export default function MergePDF() {
   const [files, setFiles] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState(null);
+  const [openFaq, setOpenFaq] = useState(null);
+  const downloadSectionRef = useRef(null);
 
   const onDrop = useCallback((acceptedFiles) => {
     const pdfFiles = acceptedFiles.filter(file => file.type === 'application/pdf');
-    setFiles(prev => [...prev, ...pdfFiles.map((file, index) => ({
-      id: Date.now() + index,
-      file,
-      name: file.name,
-      size: file.size
-    }))]);
+    const rejectedFiles = acceptedFiles.filter(file => file.type !== 'application/pdf');
+    
+    if (rejectedFiles.length > 0) {
+      toast.error('Only PDF files are allowed');
+      return;
+    }
+    
+    if (pdfFiles.length > 0) {
+      setFiles(prev => [...prev, ...pdfFiles.map((file, index) => ({
+        id: Date.now() + index,
+        file,
+        name: file.name,
+        size: file.size
+      }))]);
+      toast.success(`${pdfFiles.length} PDF file${pdfFiles.length > 1 ? 's' : ''} added successfully`);
+    }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -28,7 +41,11 @@ export default function MergePDF() {
   });
 
   const removeFile = (id) => {
+    const fileToRemove = files.find(file => file.id === id);
     setFiles(files.filter(file => file.id !== id));
+    if (fileToRemove) {
+      toast.info(`${fileToRemove.name} removed`);
+    }
   };
 
   const moveFile = (id, direction) => {
@@ -45,9 +62,14 @@ export default function MergePDF() {
   };
 
   const mergePDFs = async () => {
-    if (files.length < 2) return;
+    if (files.length < 2) {
+      toast.error('Please add at least 2 PDF files to merge');
+      return;
+    }
 
     setIsProcessing(true);
+    toast.loading('Merging PDFs...', { id: 'merge-progress' });
+    
     try {
       const formData = new FormData();
       files.forEach((fileObj, index) => {
@@ -63,12 +85,21 @@ export default function MergePDF() {
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         setDownloadUrl(url);
+        toast.success('PDFs merged successfully! Ready for download.', { id: 'merge-progress' });
+        
+        // Smooth scroll to download section after a brief delay
+        setTimeout(() => {
+          downloadSectionRef.current?.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+        }, 500);
       } else {
         throw new Error('Merge failed');
       }
     } catch (error) {
       console.error('Error merging PDFs:', error);
-      alert('Error merging PDFs. Please try again.');
+      toast.error('Failed to merge PDFs. Please try again.', { id: 'merge-progress' });
     } finally {
       setIsProcessing(false);
     }
@@ -90,10 +121,16 @@ export default function MergePDF() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-red-500 rounded-full mb-4">
             <Layers size={32} className="text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Merge PDF</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Combine multiple PDF files into one document. Simply upload your PDFs, arrange them in the desired order, and merge them together.
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Merge PDF Online Free - Combine Multiple PDF Files</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+            Merge PDF files online for free with our powerful PDF merger tool. Combine multiple PDF documents into one file instantly. No registration required, completely secure, and works in your browser.
           </p>
+          <div className="flex flex-wrap justify-center gap-2 text-sm text-gray-500 mb-4">
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Merge PDF Online</span>
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Combine PDF Files</span>
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Free PDF Merger</span>
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ No File Size Limit</span>
+          </div>
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -217,7 +254,10 @@ export default function MergePDF() {
 
           {/* Download Section */}
           {downloadUrl && (
-            <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
+            <div 
+              ref={downloadSectionRef}
+              className="bg-green-50 border border-green-200 rounded-xl p-6 text-center scroll-mt-8"
+            >
               <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Download size={32} className="text-white" />
               </div>
@@ -230,15 +270,138 @@ export default function MergePDF() {
               <a
                 href={downloadUrl}
                 download="merged.pdf"
-                className="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+                className="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                onClick={() => toast.success('Download started!')}
               >
                 <Download size={20} className="mr-2" />
                 Download Merged PDF
               </a>
             </div>
           )}
+
+          {/* SEO Content Section */}
+          <div className="mt-16 max-w-4xl mx-auto">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">How to Merge PDF Files Online</h2>
+              
+              <div className="grid md:grid-cols-2 gap-8 mb-8">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Step-by-Step Guide</h3>
+                  <ol className="space-y-3 text-gray-600">
+                    <li className="flex items-start">
+                      <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">1</span>
+                      <span>Upload multiple PDF files by clicking "Select PDF Files" or drag and drop them</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">2</span>
+                      <span>Arrange the PDFs in your desired order using the up/down arrows</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">3</span>
+                      <span>Click "Merge PDFs" to combine all files into one document</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">4</span>
+                      <span>Download your merged PDF file instantly</span>
+                    </li>
+                  </ol>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Why Choose Our PDF Merger?</h3>
+                  <ul className="space-y-3 text-gray-600">
+                    <li className="flex items-center">
+                      <span className="text-green-500 mr-3">✓</span>
+                      <span><strong>100% Free:</strong> No hidden costs or subscriptions</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-green-500 mr-3">✓</span>
+                      <span><strong>Secure:</strong> Files processed locally in your browser</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-green-500 mr-3">✓</span>
+                      <span><strong>No Registration:</strong> Start merging PDFs immediately</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-green-500 mr-3">✓</span>
+                      <span><strong>Fast Processing:</strong> Merge multiple PDFs in seconds</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-green-500 mr-3">✓</span>
+                      <span><strong>No File Limits:</strong> Combine as many PDFs as needed</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-200 pt-8">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Frequently Asked Questions</h3>
+                <div className="space-y-3">
+                  {[
+                    {
+                      id: 1,
+                      question: "Is it safe to merge PDF files online?",
+                      answer: "Yes, our PDF merger is completely secure. All processing happens locally in your browser, and your files are never uploaded to our servers. Your documents remain private and secure."
+                    },
+                    {
+                      id: 2,
+                      question: "Can I merge password-protected PDFs?",
+                      answer: "Currently, our tool works best with unprotected PDF files. If you have password-protected PDFs, you may need to unlock them first before merging."
+                    },
+                    {
+                      id: 3,
+                      question: "What's the maximum file size for merging PDFs?",
+                      answer: "There's no strict file size limit. However, very large files may take longer to process depending on your device's capabilities and internet connection."
+                    },
+                    {
+                      id: 4,
+                      question: "Can I change the order of PDFs before merging?",
+                      answer: "Absolutely! Use the up and down arrow buttons next to each file to rearrange them in your preferred order before clicking \"Merge PDFs\"."
+                    }
+                  ].map((faq) => (
+                    <div key={faq.id} className="border border-gray-200 rounded-lg">
+                      <button
+                        onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
+                        className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
+                      >
+                        <h4 className="font-medium text-gray-900">{faq.question}</h4>
+                        {openFaq === faq.id ? (
+                          <ChevronUp size={20} className="text-gray-500 flex-shrink-0 ml-2" />
+                        ) : (
+                          <ChevronDown size={20} className="text-gray-500 flex-shrink-0 ml-2" />
+                        )}
+                      </button>
+                      {openFaq === faq.id && (
+                        <div className="px-4 pb-4">
+                          <p className="text-gray-600">{faq.answer}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      
+      {/* Sonner Toast Container */}
+      <Toaster 
+        position="bottom-right"
+        richColors
+        closeButton
+        expand={false}
+        visibleToasts={5}
+        toastOptions={{
+          style: {
+            background: 'white',
+            border: '1px solid #e5e7eb',
+            color: '#374151',
+          },
+          className: 'font-medium',
+          duration: 4000,
+        }}
+      />
     </div>
   );
 }
