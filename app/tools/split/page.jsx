@@ -274,7 +274,7 @@ export default function SplitPDF() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-4">
@@ -286,7 +286,7 @@ export default function SplitPDF() {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="w-full flex flex-col ">
           {/* File Upload Area */}
           {!file && (
             <div
@@ -496,7 +496,7 @@ export default function SplitPDF() {
               </div>
 
               {/* Right Panel - Split Controls */}
-              <div className="w-80">
+              <div className="w-100">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6">
                   <h2 className="text-xl font-bold text-gray-900 mb-6">Split</h2>
 
@@ -563,7 +563,7 @@ export default function SplitPDF() {
                               max={pdfInfo?.pageCount || 1}
                               value={rangeStart}
                               onChange={(e) => setRangeStart(parseInt(e.target.value) || 1)}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 text-gray-700 focus:border-transparent"
                             />
                           </div>
                           <div className="text-gray-400 mt-6">to</div>
@@ -575,7 +575,7 @@ export default function SplitPDF() {
                               max={pdfInfo?.pageCount || 1}
                               value={rangeEnd}
                               onChange={(e) => setRangeEnd(parseInt(e.target.value) || 1)}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 text-gray-700 focus:border-transparent"
                             />
                           </div>
                         </div>
@@ -630,7 +630,7 @@ export default function SplitPDF() {
                             placeholder="example: 1,5-8"
                             value={Array.from(selectedPages).sort((a, b) => a - b).join(',')}
                             readOnly
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 focus:border-transparent"
                           />
                           <p className="text-xs text-gray-500 mt-1">
                             Click on pages above to select them
@@ -661,9 +661,9 @@ export default function SplitPDF() {
                             min="1"
                             value={splitOptions.maxSizeMB}
                             onChange={(e) => setSplitOptions({...splitOptions, maxSizeMB: parseInt(e.target.value) || 1})}
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 text-gray-700 focus:ring-red-500 focus:border-transparent"
                           />
-                          <select className="px-3 py-2 border border-gray-300 rounded-lg">
+                          <select className="px-3 py-2 text-gray-700 border border-gray-300 rounded-lg">
                             <option>MB</option>
                           </select>
                         </div>
