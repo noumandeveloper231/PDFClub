@@ -2,22 +2,7 @@
 
 import Link from 'next/link';
 import { 
-  FileText, 
   Scissors, 
-  Archive, 
-  FileImage, 
-  Image, 
-  RotateCw, 
-  Droplets, 
-  Lock, 
-  Unlock, 
-  Settings, 
-  Hash, 
-  Crop,
-  FileSpreadsheet,
-  Presentation,
-  Edit,
-  PenTool,
   Shield,
   Eye,
   Layers,
@@ -26,7 +11,6 @@ import {
 
 const PDFToolsGrid = () => {
   const tools = [
-    // Core Tools - Row 1
     {
       id: 'merge',
       title: 'Merge PDF',
@@ -42,172 +26,12 @@ const PDFToolsGrid = () => {
       icon: Scissors,
       color: 'bg-blue-500',
       href: '/tools/split'
-    },
-    {
-      id: 'compress',
-      title: 'Compress PDF',
-      description: 'Reduce file size while optimizing for maximal PDF quality.',
-      icon: Archive,
-      color: 'bg-green-500',
-      href: '/tools/compress'
-    },
-    {
-      id: 'pdf-to-word',
-      title: 'PDF to Word',
-      description: 'Easily convert your PDF files into easy to edit DOC and DOCX documents.',
-      icon: FileText,
-      color: 'bg-blue-600',
-      href: '/tools/pdf-to-word'
-    },
-
-    // Conversion Tools - Row 2
-    {
-      id: 'pdf-to-excel',
-      title: 'PDF to Excel',
-      description: 'Pull data straight from PDFs into Excel spreadsheets in a few short seconds.',
-      icon: FileSpreadsheet,
-      color: 'bg-green-600',
-      href: '/tools/pdf-to-excel'
-    },
-    {
-      id: 'pdf-to-powerpoint',
-      title: 'PDF to PowerPoint',
-      description: 'Turn your PDF files into easy to edit PPT and PPTX slideshows.',
-      icon: Presentation,
-      color: 'bg-orange-500',
-      href: '/tools/pdf-to-powerpoint'
-    },
-    {
-      id: 'word-to-pdf',
-      title: 'Word to PDF',
-      description: 'Make DOC and DOCX files easy to read by converting them to PDF.',
-      icon: FileText,
-      color: 'bg-indigo-500',
-      href: '/tools/word-to-pdf'
-    },
-    {
-      id: 'excel-to-pdf',
-      title: 'Excel to PDF',
-      description: 'Make EXCEL spreadsheets easy to read by converting them to PDF.',
-      icon: FileSpreadsheet,
-      color: 'bg-teal-500',
-      href: '/tools/excel-to-pdf'
-    },
-    {
-      id: 'powerpoint-to-pdf',
-      title: 'PowerPoint to PDF',
-      description: 'Make PPT and PPTX presentations easy to read by converting them to PDF.',
-      icon: Presentation,
-      color: 'bg-red-500',
-      href: '/tools/powerpoint-to-pdf'
-    },
-
-    // Image Tools - Row 3
-    {
-      id: 'pdf-to-jpg',
-      title: 'PDF to JPG',
-      description: 'Convert each PDF page into a JPG or extract all images contained in a PDF.',
-      icon: FileImage,
-      color: 'bg-purple-500',
-      href: '/tools/pdf-to-jpg'
-    },
-    {
-      id: 'jpg-to-pdf',
-      title: 'JPG to PDF',
-      description: 'Convert JPG images to PDF in seconds. Easily adjust orientation and margins.',
-      icon: Image,
-      color: 'bg-pink-500',
-      href: '/tools/jpg-to-pdf'
-    },
-    {
-      id: 'edit-pdf',
-      title: 'Edit PDF',
-      description: 'Add text, images, shapes or freehand annotations to a PDF document.',
-      icon: Edit,
-      color: 'bg-yellow-500',
-      href: '/tools/edit-pdf'
-    },
-    {
-      id: 'sign-pdf',
-      title: 'Sign PDF',
-      description: 'Sign yourself or request electronic signatures from others.',
-      icon: PenTool,
-      color: 'bg-red-600',
-      href: '/tools/sign'
-    },
-
-    // Utility Tools - Row 4
-    {
-      id: 'watermark',
-      title: 'Watermark PDF',
-      description: 'Stamp an image or text over your PDF in seconds. Choose typography and position.',
-      icon: Droplets,
-      color: 'bg-cyan-500',
-      href: '/tools/watermark'
-    },
-    {
-      id: 'rotate',
-      title: 'Rotate PDF',
-      description: 'Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!',
-      icon: RotateCw,
-      color: 'bg-lime-500',
-      href: '/tools/rotate'
-    },
-    {
-      id: 'unlock',
-      title: 'Unlock PDF',
-      description: 'Remove PDF password security, giving you the freedom to use your PDFs as you want.',
-      icon: Unlock,
-      color: 'bg-emerald-500',
-      href: '/tools/unlock'
-    },
-    {
-      id: 'protect',
-      title: 'Protect PDF',
-      description: 'Protect PDF files with a password. Encrypt PDF documents to prevent unauthorized access.',
-      icon: Lock,
-      color: 'bg-slate-600',
-      href: '/tools/protect'
-    },
-
-    // Advanced Tools - Row 5
-    {
-      id: 'organize',
-      title: 'Organize PDF',
-      description: 'Sort pages of your PDF file however you like. Delete or add PDF pages at your convenience.',
-      icon: Settings,
-      color: 'bg-violet-500',
-      href: '/tools/organize'
-    },
-    {
-      id: 'page-numbers',
-      title: 'Page Numbers',
-      description: 'Add page numbers into PDFs with ease. Choose your positions, dimensions, typography.',
-      icon: Hash,
-      color: 'bg-rose-500',
-      href: '/tools/page-numbers'
-    },
-    {
-      id: 'crop',
-      title: 'Crop PDF',
-      description: 'Crop margins of PDF documents or select specific areas for the whole document.',
-      icon: Crop,
-      color: 'bg-amber-500',
-      href: '/tools/crop'
-    },
-    {
-      id: 'validate',
-      title: 'Validate PDF',
-      description: 'Check PDF file integrity and validate document structure and compliance.',
-      icon: Shield,
-      color: 'bg-gray-600',
-      href: '/tools/validate'
     }
   ];
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
         {tools.map((tool) => {
           const IconComponent = tool.icon;
           return (

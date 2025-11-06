@@ -19,13 +19,17 @@ const oswald = Oswald({
   variable: "--font-oswald",
 });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export const metadata = {
-  title: "PDFClub – Free PDF to Word, Merge & Compress Tools",
-  description: "Convert, merge, compress, and edit PDFs instantly. PDFClub offers 100% free, secure online PDF tools with no signup required.",
-  keywords: "pdf, pdf to word, compress pdf, merge pdf, pdf tools online, free pdf converter, split pdf, pdf editor, document converter",
-  authors: [{ name: "PDFClub" }],
-  creator: "PDFClub",
-  publisher: "PDFClub",
+  title: 'Free PDF Merge & Split Tools Online - Combine & Separate PDF Files',
+  description: 'Free online PDF tools to merge multiple PDFs into one file or split large PDFs into separate pages. Fast, secure, and no registration required. Works in your browser.',
+  keywords: 'merge pdf, split pdf, combine pdf, pdf merger, pdf splitter, online pdf tools, free pdf tools',
+  author: 'PDF Tools Online',
+  robots: 'index, follow',
   formatDetection: {
     email: false,
     address: false,
@@ -163,10 +167,10 @@ export default function RootLayout({ children }) {
               <div className="grid md:grid-cols-3 gap-8 mb-8">
                 <div>
                   <h3 className="font-oswald font-semibold text-lg mb-4">
-                    OnClick PDF
+                    PDFClub
                   </h3>
                   <p className="text-slate-300 text-sm">
-                    Professional PDF to DOCX conversion made simple and secure.
+                    Professional PDF merge and split tools made simple and secure.
                   </p>
                 </div>
                 <div>
@@ -192,8 +196,8 @@ export default function RootLayout({ children }) {
               </div>
               <div className="border-t border-slate-700 pt-8">
                 <p className="text-slate-400 text-sm">
-                  © 2024 OnClick PDF. Powered by ConvertAPI • Secure and Fast
-                  Conversion
+                  © 2024 PDFClub. Free PDF Tools • Secure and Fast
+                  Processing
                 </p>
               </div>
             </div>
