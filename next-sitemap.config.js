@@ -19,10 +19,8 @@ module.exports = {
   transform: async (config, path) => {
     const customPriorities = {
       '/': 1.0,
-      '/tools/convert': 0.9,
-      '/tools/compress': 0.9,
-      '/tools/merge': 0.9,
-      '/tools/split': 0.9,
+      '/merge': 0.9,
+      '/split': 0.9,
       '/about': 0.7,
       '/settings': 0.5,
     };
