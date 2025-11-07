@@ -35,6 +35,16 @@ export const metadata = {
     address: false,
     telephone: false,
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: '/logo.webp', sizes: '192x192', type: 'image/webp' },
+    ],
+    apple: [
+      { url: '/logo.webp', sizes: '180x180', type: 'image/webp' },
+    ],
+    shortcut: '/favicon.ico',
+  },
   metadataBase: new URL('https://pdfclub.online'),
   alternates: {
     canonical: '/',
