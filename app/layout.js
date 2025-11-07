@@ -86,7 +86,7 @@ export const metadata = {
   verification: {
     google: 'your-google-verification-code',
     yandex: 'a2b9c989ef8ce275',
-    yahoo: 'your-yahoo-verification-code',
+    yahoo: '4381B1C5349384186D59C3DD02256449',
   },
 };
 
