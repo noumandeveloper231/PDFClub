@@ -85,7 +85,7 @@ export const metadata = {
   },
   verification: {
     google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
+    yandex: 'a2b9c989ef8ce275',
     yahoo: 'your-yahoo-verification-code',
   },
 };
