@@ -6,10 +6,10 @@ export const metadata = {
     title: 'Free PDF Merger - Combine Multiple PDFs Online',
     description: 'Merge multiple PDF files into one document instantly. 100% free and secure.',
     type: 'website',
-    url: 'https://pdfclub.online/tools/merge',
+    url: 'https://pdfclub.online/merge',
   },
   alternates: {
-    canonical: '/tools/merge',
+    canonical: '/merge',
   },
 };
 
@@ -17,9 +17,9 @@ export default function MergeLayout({ children }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "PDF Merger Online",
+    "name": "PDF Merger Online | PDFClub",
     "description": "Free online tool to merge multiple PDF files into one document",
-    "url": "https://pdfclub.online/tools/merge",
+    "url": "https://pdfclub.online/merge",
     "applicationCategory": "UtilityApplication",
     "operatingSystem": "Web Browser",
     "offers": {

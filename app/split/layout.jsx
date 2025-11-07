@@ -6,10 +6,10 @@ export const metadata = {
     title: 'Free PDF Splitter - Split PDF Pages Online',
     description: 'Split PDF documents into separate pages or extract specific page ranges. 100% free and secure.',
     type: 'website',
-    url: 'https://pdfclub.online/tools/split',
+    url: 'https://pdfclub.online/split',
   },
   alternates: {
-    canonical: '/tools/split',
+    canonical: '/split',
   },
 };
 
@@ -17,9 +17,9 @@ export default function SplitLayout({ children }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "PDF Splitter Online",
+    "name": "PDF Splitter Online | PDFClub",
     "description": "Free online tool to split PDF documents into separate pages or extract page ranges",
-    "url": "https://pdfclub.online/tools/split",
+    "url": "https://pdfclub.online/split",
     "applicationCategory": "UtilityApplication",
     "operatingSystem": "Web Browser",
     "offers": {

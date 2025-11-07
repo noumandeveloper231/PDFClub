@@ -17,7 +17,7 @@ const PDFToolsGrid = () => {
       description: 'Combine PDFs in the order you want with the easiest PDF merger available.',
       icon: Layers,
       color: 'bg-red-500',
-      href: '/tools/merge'
+      href: '/merge'
     },
     {
       id: 'split',
@@ -25,7 +25,7 @@ const PDFToolsGrid = () => {
       description: 'Separate one page or a whole set for easy conversion into independent PDF files.',
       icon: Scissors,
       color: 'bg-blue-500',
-      href: '/tools/split'
+      href: '/split'
     }
   ];
 

@@ -130,7 +130,7 @@ export default function RootLayout({ children }) {
           }
         },
         {
-          "@type": "Offer", 
+          "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
             "name": "PDF Compression",
@@ -140,7 +140,7 @@ export default function RootLayout({ children }) {
         {
           "@type": "Offer",
           "itemOffered": {
-            "@type": "Service", 
+            "@type": "Service",
             "name": "PDF Merge",
             "description": "Combine multiple PDF files into one document"
           }
@@ -149,7 +149,7 @@ export default function RootLayout({ children }) {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "PDF Split", 
+            "name": "PDF Split",
             "description": "Split PDF documents into separate pages or sections"
           }
         }
@@ -180,7 +180,7 @@ export default function RootLayout({ children }) {
                     PDFClub
                   </h3>
                   <p className="text-slate-300 text-sm">
-                    Professional PDF merge and split tools made simple and secure.
+                    Professional PDF merge and split tools made simple and secure by PDF Club.
                   </p>
                 </div>
                 <div>
@@ -240,7 +240,7 @@ export default function RootLayout({ children }) {
 
         {/* ✅ Place Analytics here */}
         <Analytics />
-        <SpeedInsights/>
+        <SpeedInsights />
       </body>
     </html>
   );
