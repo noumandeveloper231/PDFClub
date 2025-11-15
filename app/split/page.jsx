@@ -273,7 +273,7 @@ export default function SplitPDF() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-blue-50">
       <div className="w-full px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -318,7 +318,7 @@ export default function SplitPDF() {
               <div className="flex-1">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <div className="shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                       <FileText size={24} className="text-blue-600" />
                     </div>
                     <div className="flex-1">
@@ -409,7 +409,7 @@ export default function SplitPDF() {
                             aria-label={`Page ${pageNum}${selectedPages.has(pageNum) ? ', selected' : ''}`}
                             aria-selected={selectedPages.has(pageNum)}
                           >
-                            <div className="aspect-[3/4] p-2">
+                            <div className="aspect-3/4 p-2">
                               {pdfData && (
                                 <Document file={pdfData} className="w-full h-full">
                                   <Page
@@ -456,7 +456,7 @@ export default function SplitPDF() {
                     <div className="mb-6">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">Range Preview</h3>
                       <div className="flex gap-4 items-center mb-4">
-                        <div className="aspect-[3/4] w-40 border-2 border-gray-200 rounded-lg p-2">
+                        <div className="aspect-3/4 w-40 border-2 border-gray-200 rounded-lg p-2">
                           {pdfData && (
                             <Document file={pdfData} className="w-full h-full">
                               <Page
@@ -473,7 +473,7 @@ export default function SplitPDF() {
                           </div>
                         </div>
                         <div className="text-2xl text-gray-400 mx-4">...</div>
-                        <div className="aspect-[3/4] w-40 border-2 border-gray-200 rounded-lg p-2">
+                        <div className="aspect-3/4 w-40 border-2 border-gray-200 rounded-lg p-2">
                           {pdfData && (
                             <Document file={pdfData} className="w-full h-full">
                               <Page

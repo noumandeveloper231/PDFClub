@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 // import { Analytics } from "@vercel/analytics/react"; // ✅ correct import path
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import Footer from "./components/Footer";
 
 
 const poppins = Poppins({
@@ -168,50 +169,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${poppins.variable} ${oswald.variable} antialiased font-poppins`}
       >
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 to-blue-50">
           <Navigation />
           <main className="flex-1 p-4 md:p-3 lg:p-0">{children}</main>
 
-          <footer className="bg-gradient-to-r from-slate-900 to-blue-900 text-white px-8 py-12">
-            <div className="max-w-6xl mx-auto text-center">
-              <div className="grid md:grid-cols-3 gap-8 mb-8">
-                <div>
-                  <h3 className="font-oswald font-semibold text-lg mb-4">
-                    PDFClub
-                  </h3>
-                  <p className="text-slate-300 text-sm">
-                    Professional PDF merge and split tools made simple and secure by PDF Club.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-oswald font-semibold text-lg mb-4">
-                    Features
-                  </h3>
-                  <ul className="text-slate-300 text-sm space-y-2">
-                    <li>• Instant Conversion</li>
-                    <li>• Secure Processing</li>
-                    <li>• High Quality Output</li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="font-oswald font-semibold text-lg mb-4">
-                    Support
-                  </h3>
-                  <ul className="text-slate-300 text-sm space-y-2">
-                    <li>• 24/7 Available</li>
-                    <li>• No Registration</li>
-                    <li>• Free to Use</li>
-                  </ul>
-                </div>
-              </div>
-              <div className="border-t border-slate-700 pt-8">
-                <p className="text-slate-400 text-sm">
-                  © 2024 PDFClub. Free PDF Tools • Secure and Fast
-                  Processing
-                </p>
-              </div>
-            </div>
-          </footer>
+          <Footer />
         </div>
 
         <Toaster

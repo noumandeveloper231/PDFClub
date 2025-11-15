@@ -114,7 +114,7 @@ export default function MergePDF() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
+    <div className="min-h-screen bg-linear-to-br from-red-50 via-white to-red-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -181,7 +181,7 @@ export default function MergePDF() {
                     key={fileObj.id}
                     className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200"
                   >
-                    <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                    <div className="shrink-0 w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
                       <FileText size={20} className="text-red-600" />
                     </div>
                     
@@ -366,9 +366,9 @@ export default function MergePDF() {
                       >
                         <h4 className="font-medium text-gray-900">{faq.question}</h4>
                         {openFaq === faq.id ? (
-                          <ChevronUp size={20} className="text-gray-500 flex-shrink-0 ml-2" />
+                          <ChevronUp size={20} className="text-gray-500 shrink-0 ml-2" />
                         ) : (
-                          <ChevronDown size={20} className="text-gray-500 flex-shrink-0 ml-2" />
+                          <ChevronDown size={20} className="text-gray-500 shrink-0 ml-2" />
                         )}
                       </button>
                       {openFaq === faq.id && (
