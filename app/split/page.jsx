@@ -276,7 +276,7 @@ export default function SplitPDF() {
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-blue-50">
       <div className="w-full px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-8">
+        <header className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-4">
             <Scissors size={32} className="text-white" />
           </div>
@@ -284,7 +284,13 @@ export default function SplitPDF() {
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Separate one page or a whole set for easy conversion into independent PDF files. Choose how you want to split your document.
           </p>
-        </div>
+          <div className="flex flex-wrap justify-center gap-2 text-sm text-gray-500 mb-4">
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Split PDF Online</span>
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Split PDF Files</span>
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Free PDF Splitter</span>
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ No File Size Limit</span>
+          </div>
+        </header>
 
         <div className="w-full flex flex-col ">
           {/* File Upload Area */}

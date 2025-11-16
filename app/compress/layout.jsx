@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'PDF Compresser Online Free - Reduce PDF File Size Instantly | PDFClub',
-  description: 'Use our free online PDF compresser tool to compress PDF files and reduce their file size quickly and securely. Minimize PDF size with our PDF file compressor and shrink PDFs without losing quality. No installation or registration required at PDFClub.',
+  description: 'Use our powerful PDF Compressor to reduce the file size online for free. Our free PDF compressor is designed to shrink pdf file without reducing quality. With PDFClub, you can minimize your PDF size in seconds and download the compressed file instantly.',
   keywords: 'pdf compresser, compress pdf, reduce pdf size, decrease pdf size, pdf file compressor, shrink pdf size, pdfclub, minimize pdf size, pdfclub',
   openGraph: {
     title: 'Free PDF Compresser - Reduce PDF File Size Online | PDFClub',

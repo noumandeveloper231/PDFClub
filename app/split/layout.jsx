@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Split PDF Online Free - Separate PDF Pages into Individual Files',
-  description: 'Free online PDF splitter tool to extract pages from PDF documents. Split PDF by page ranges, individual pages, or file size. Fast, secure, and no registration required.',
+  description: 'Free online PDF splitter to extract pages from PDF documents. Split PDF by range, single page, or reduce file size. Fast, secure, and no registration required.',
   keywords: 'split pdf, pdf splitter, extract pdf pages, separate pdf, split pdf online, pdf page extractor, free pdf splitter, pdfclub,',
   openGraph: {
     title: 'Free PDF Splitter - Split PDF Pages Online',

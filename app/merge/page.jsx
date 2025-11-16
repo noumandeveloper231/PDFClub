@@ -15,12 +15,12 @@ export default function MergePDF() {
   const onDrop = useCallback((acceptedFiles) => {
     const pdfFiles = acceptedFiles.filter(file => file.type === 'application/pdf');
     const rejectedFiles = acceptedFiles.filter(file => file.type !== 'application/pdf');
-    
+
     if (rejectedFiles.length > 0) {
       toast.error('Only PDF files are allowed');
       return;
     }
-    
+
     if (pdfFiles.length > 0) {
       setFiles(prev => [...prev, ...pdfFiles.map((file, index) => ({
         id: Date.now() + index,
@@ -69,7 +69,7 @@ export default function MergePDF() {
 
     setIsProcessing(true);
     toast.loading('Merging PDFs...', { id: 'merge-progress' });
-    
+
     try {
       const formData = new FormData();
       files.forEach((fileObj, index) => {
@@ -86,12 +86,12 @@ export default function MergePDF() {
         const url = URL.createObjectURL(blob);
         setDownloadUrl(url);
         toast.success('PDFs merged successfully! Ready for download.', { id: 'merge-progress' });
-        
+
         // Smooth scroll to download section after a brief delay
         setTimeout(() => {
-          downloadSectionRef.current?.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center' 
+          downloadSectionRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
           });
         }, 500);
       } else {
@@ -117,13 +117,13 @@ export default function MergePDF() {
     <div className="min-h-screen bg-linear-to-br from-red-50 via-white to-red-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-8">
+        <header className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-red-500 rounded-full mb-4">
             <Layers size={32} className="text-white" />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Merge PDF Online Free - Combine Multiple PDF Files</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-            Merge PDF files online for free with our powerful PDF merger tool. Combine multiple PDF documents into one file instantly. No registration required, completely secure, and works in your browser.
+            Merge PDF online for free with our powerful PDF merger tool. Combine multiple PDF documents into one file instantly. Convert pdf to pdf merge. No registration required, completely secure, and works in your browser.
           </p>
           <div className="flex flex-wrap justify-center gap-2 text-sm text-gray-500 mb-4">
             <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Merge PDF Online</span>
@@ -131,18 +131,17 @@ export default function MergePDF() {
             <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Free PDF Merger</span>
             <span className="bg-gray-100 px-3 py-1 rounded-full">✓ No File Size Limit</span>
           </div>
-        </div>
+        </header>
 
         <div className="max-w-4xl mx-auto">
           {/* File Upload Area */}
           {files.length === 0 && (
             <div
               {...getRootProps()}
-              className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-colors ${
-                isDragActive 
-                  ? 'border-red-500 bg-red-50' 
+              className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-colors ${isDragActive
+                  ? 'border-red-500 bg-red-50'
                   : 'border-gray-300 hover:border-red-400 hover:bg-gray-50'
-              }`}
+                }`}
             >
               <input {...getInputProps()} />
               <Upload size={48} className="mx-auto mb-4 text-gray-400" />
@@ -184,7 +183,7 @@ export default function MergePDF() {
                     <div className="shrink-0 w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
                       <FileText size={20} className="text-red-600" />
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-gray-900 truncate">
                         {fileObj.name}
@@ -254,7 +253,7 @@ export default function MergePDF() {
 
           {/* Download Section */}
           {downloadUrl && (
-            <div 
+            <div
               ref={downloadSectionRef}
               className="bg-green-50 border border-green-200 rounded-xl p-6 text-center scroll-mt-8"
             >
@@ -283,7 +282,7 @@ export default function MergePDF() {
           <div className="mt-16 max-w-4xl mx-auto">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">How to Merge PDF Files Online</h2>
-              
+
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Step-by-Step Guide</h3>
@@ -384,9 +383,9 @@ export default function MergePDF() {
           </div>
         </div>
       </div>
-      
+
       {/* Sonner Toast Container */}
-      <Toaster 
+      <Toaster
         position="bottom-right"
         richColors
         closeButton
