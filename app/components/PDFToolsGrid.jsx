@@ -6,7 +6,8 @@ import {
   Shield,
   Eye,
   Layers,
-  Download
+  Download,
+  Folder
 } from 'lucide-react';
 
 const PDFToolsGrid = () => {
@@ -26,12 +27,20 @@ const PDFToolsGrid = () => {
       icon: Scissors,
       color: 'bg-blue-500',
       href: '/split'
+    },
+    {
+      id: 'compress',
+      title: 'Compress PDF',
+      description: 'Compress PDF files to reduce their size without losing quality.',
+      icon: Folder,
+      color: 'bg-green-500',
+      href: '/compress'
     }
   ];
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+    <div className="max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mx-auto">
         {tools.map((tool) => {
           const IconComponent = tool.icon;
           return (
