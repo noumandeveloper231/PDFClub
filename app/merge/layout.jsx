@@ -1,7 +1,7 @@
 export const metadata = {
   title: 'Merge PDF Online Free - Combine Multiple PDF Files into One Document',
   description: 'Free online PDF merger tool to combine multiple PDF files into one document. Fast, secure, and easy to use. Merge pdf documents online no registration required. Merge PDFs in seconds.',
-  keywords: 'merge pdf, combine pdf, pdf merger, merge pdf online, combine pdf files, pdf merge tool, free pdf merger, pdfclub, pdf merge online, pdf to pdf merge',
+  keywords: 'merge pdf, combine pdf, pdf merger, pdf to pdf merge, merge pdf files, merge pdf documents, free pdf merger, pdfclub, pdf merge online, pdf to pdf merge',
   openGraph: {
     title: 'Free PDF Merger - Combine Multiple PDFs Online',
     description: 'Merge multiple PDF files into one document instantly. 100% free and secure.',

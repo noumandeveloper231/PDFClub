@@ -2,11 +2,9 @@ import { Poppins, Oswald } from "next/font/google";
 import "./globals.css";
 import Navigation from "./components/Navigation";
 import { Toaster } from "react-hot-toast";
-// import { Analytics } from "@vercel/analytics/react"; // ✅ correct import path
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import Footer from "./components/Footer";
-
+import Link from "next/link";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -173,7 +171,75 @@ export default function RootLayout({ children }) {
           <Navigation />
           <main className="flex-1 p-4 md:p-3 lg:p-0">{children}</main>
 
-          <Footer />
+          <footer className="w-full bg-gray-50 border-t border-gray-300">
+            <div className="max-w-6xl w-full py-10 mx-auto px-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+              {/* About Section */}
+              <div className="col-span-1 lg:col-span-1">
+                <h3 className="text-gray-800 text-xl font-bold mb-4">About PDFClub</h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  PDFClub provides free online tools to compress, merge, split, and convert PDF files securely. Fast, easy, and no registration required.
+                </p>
+                <ul className="space-y-2 text-gray-600 text-sm">
+                  <li><Link href="/about" className="hover:text-blue-600">About Us</Link></li>
+                  <li><Link href="/terms-of-service" className="hover:text-blue-600">Terms of Service</Link></li>
+                  <li><Link href="/privacy-policy" className="hover:text-blue-600">Privacy Policy</Link></li>
+                  <li><Link href="/faq" className="hover:text-blue-600">FAQ</Link></li>
+                </ul>
+              </div>
+
+              {/* Tools Section */}
+              <div className="col-span-1 lg:col-span-1">
+                <h3 className="text-gray-800 text-xl font-bold mb-4">Tools</h3>
+                <ul className="space-y-2 text-gray-600 text-sm">
+                  <li><Link href="/pdf-to-word" className="hover:text-blue-600">PDF to Word</Link></li>
+                  <li><Link href="/compress-pdf" className="hover:text-blue-600">Compress PDF</Link></li>
+                  <li><Link href="/merge-pdf" className="hover:text-blue-600">Merge PDF</Link></li>
+                  <li><Link href="/split-pdf" className="hover:text-blue-600">Split PDF</Link></li>
+                  <li><Link href="/pdf-to-image" className="hover:text-blue-600">PDF to Image</Link></li>
+                  <li><Link href="/image-to-pdf" className="hover:text-blue-600">Image to PDF</Link></li>
+                </ul>
+              </div>
+
+              {/* Resources Section */}
+              <div className="col-span-1 lg:col-span-1">
+                <h3 className="text-gray-800 text-xl font-bold mb-4">Resources</h3>
+                <ul className="space-y-2 text-gray-600 text-sm">
+                  <li><Link href="/blog" className="hover:text-blue-600">Blog</Link></li>
+                  <li><Link href="/guides" className="hover:text-blue-600">Guides</Link></li>
+                  <li><Link href="/tools-tutorials" className="hover:text-blue-600">Tutorials</Link></li>
+                  <li><Link href="/support" className="hover:text-blue-600">Support</Link></li>
+                </ul>
+              </div>
+
+              {/* Contact Section */}
+              <div className="col-span-1 lg:col-span-1">
+                <h3 className="text-gray-800 text-xl font-bold mb-4">Contact</h3>
+                <ul className="space-y-2 text-gray-600 text-sm">
+                  <li><Link href="/contact-us" className="hover:text-blue-600">Contact Us</Link></li>
+                  <li><Link href="/about/team" className="hover:text-blue-600">Our Team</Link></li>
+                  <li><a href="mailto:support@pdfclub.online" className="hover:text-blue-600">support@pdfclub.online</a></li>
+                  <li><Link href="/careers" className="hover:text-blue-600">Careers</Link></li>
+                </ul>
+              </div>
+
+              {/* Social Section */}
+              <div className="col-span-1 lg:col-span-1">
+                <h3 className="text-gray-800 text-xl font-bold mb-4">Follow Us</h3>
+                <ul className="flex flex-col space-y-2 text-gray-600 text-sm">
+                  <li><a href="https://twitter.com/pdfclub" target="_blank" className="hover:text-blue-600">Twitter</a></li>
+                  <li><a href="https://facebook.com/pdfclub" target="_blank" className="hover:text-blue-600">Facebook</a></li>
+                  <li><a href="https://linkedin.com/company/pdfclub" target="_blank" className="hover:text-blue-600">LinkedIn</a></li>
+                  <li><a href="https://youtube.com/pdfclub" target="_blank" className="hover:text-blue-600">YouTube</a></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Bottom */}
+            <div className="py-5 border-t border-gray-300 text-center text-gray-500 text-sm">
+              <p>© {new Date().getFullYear()} PDFClub. All rights reserved.</p>
+            </div>
+          </footer>
+
         </div>
 
         <Toaster

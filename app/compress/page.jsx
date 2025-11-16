@@ -374,14 +374,22 @@ export default function CompressPDFPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-rose-50 py-12">
       <div className="max-w-6xl mx-auto px-4">
-        <header className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500 text-white mb-4">
-            <CompressIcon size={28} />
+        <header className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-red-500 rounded-full mb-4">
+            <Layers size={32} className="text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-slate-900 mb-3">Compress PDF</h1>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-            Reduce your PDF file size without losing quality. Choose your compression level and get a download-ready file within seconds.
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            PDFClub: The Ultimate PDF Compresser - Compress PDF Online Free
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+            Use our powerful PDF Compressor to reduce your PDF file size online for free. Our PDF file compressor is designed to shrink your PDFs without compromising quality. With PDFClub, you can minimize your PDF size in seconds and download the compressed file instantly.
           </p>
+          <div className="flex flex-wrap justify-center gap-2 text-sm text-gray-500 mb-4">
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Compress PDF Online Free</span>
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Decrease PDF File Size</span>
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Reduce PDF Size with PDFClub</span>
+            <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Minimize PDF Size with our PDF Compresser</span>
+          </div>
         </header>
 
         <input
@@ -404,11 +412,10 @@ export default function CompressPDFPage() {
                 {LEVELS.map((level) => (
                   <button
                     key={level.id}
-                    className={`w-full text-left rounded-2xl border p-4 transition-all ${
-                      selectedLevel === level.id
+                    className={`w-full text-left rounded-2xl border p-4 transition-all ${selectedLevel === level.id
                         ? `${level.accent} shadow-[0_10px_30px_rgba(0,0,0,0.05)]`
                         : 'border-slate-200 hover:border-slate-300'
-                    }`}
+                      }`}
                     onClick={() => setSelectedLevel(level.id)}
                   >
                     <div className="flex items-center justify-between">
@@ -421,9 +428,8 @@ export default function CompressPDFPage() {
                       )}
                     </div>
                     <p
-                      className={`text-xs font-semibold uppercase tracking-wide mt-3 ${
-                        level.id === 'extreme' ? 'text-red-500' : 'text-slate-500'
-                      }`}
+                      className={`text-xs font-semibold uppercase tracking-wide mt-3 ${level.id === 'extreme' ? 'text-red-500' : 'text-slate-500'
+                        }`}
                     >
                       {level.badge}
                     </p>
@@ -465,11 +471,10 @@ export default function CompressPDFPage() {
             <button
               onClick={status === 'success' ? handleDownload : compressPdf}
               disabled={!file || status === 'compressing'}
-              className={`inline-flex items-center gap-2 rounded-full px-8 py-4 text-white font-semibold transition-colors ${
-                status === 'success'
+              className={`inline-flex items-center gap-2 rounded-full px-8 py-4 text-white font-semibold transition-colors ${status === 'success'
                   ? 'bg-green-500 hover:bg-green-600'
                   : 'bg-red-500 hover:bg-red-600 disabled:bg-red-300'
-              }`}
+                }`}
             >
               {status === 'success' ? (
                 <>
