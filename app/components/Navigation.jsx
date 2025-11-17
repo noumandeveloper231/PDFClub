@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FileText, Home, Info, Settings, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import Image from 'next/image';
 
@@ -18,6 +18,7 @@ const Navigation = () => {
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/settings', label: 'Settings' },
+    { href: '/faq', label: 'FAQs' },
   ];
 
   return (
@@ -27,22 +28,33 @@ const Navigation = () => {
           <Image src="/logo.webp" alt="Logo" width={40} height={40} />
           <span>PDFClub</span>
         </Link>
-        
+
         {/* Desktop Navigation */}
         <div className="hidden md:flex gap-8">
           {navLinks.map(({ href, label }) => (
-            <Link 
+            <Link
               key={href}
               href={href}
-              className={`font-medium transition-all duration-300 ${
-                isActive(href) 
-                  ? 'text-(--secondary-color) underline underline-offset-4 '
-                  : 'text-(--white-color) hover:text-(--primary-color) hover:scale-105 hover:-translate-y-0.5'
-              }`}
+              className={`font-medium transition-all duration-300 ${isActive(href)
+                ? 'text-(--secondary-color) underline underline-offset-4 '
+                : 'text-(--white-color) hover:text-(--primary-color) hover:scale-105 hover:-translate-y-0.5'
+                }`}
             >
               {label}
             </Link>
           ))}
+          <Link href="/privacy-policy" className={`font-medium transition-all duration-300 ${isActive('/privacy-policy')
+            ? 'text-(--secondary-color) underline underline-offset-4 '
+            : 'text-gray-400 hover:text-(--primary-color) hover:scale-105 hover:-translate-y-0.5'
+            }`} >
+            Privacy Policy
+          </Link>
+          <Link href="/terms-of-service" className={`font-medium transition-all duration-300 ${isActive('/terms-of-service')
+            ? 'text-(--secondary-color) underline underline-offset-4 '
+            : 'text-gray-400 hover:text-(--primary-color) hover:scale-105 hover:-translate-y-0.5'
+            }`}>
+            Terms of Service
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -59,20 +71,20 @@ const Navigation = () => {
         <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md border-b border-slate-200/50 shadow-soft animate-slide-up">
           <div className="px-4 py-4 space-y-2">
             {navLinks.map(({ href, label, icon: Icon }) => (
-              <Link 
+              <Link
                 key={href}
-                href={href} 
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
-                  isActive(href) 
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' 
-                    : 'text-slate-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600'
-                }`}
+                href={href}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${isActive(href)
+                  ? 'bg-linear-to-r from-blue-600 to-purple-600 text-white'
+                  : 'text-slate-600 hover:bg-linear-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600'
+                  }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <Icon size={18} />
                 <span>{label}</span>
               </Link>
             ))}
+
           </div>
         </div>
       )}

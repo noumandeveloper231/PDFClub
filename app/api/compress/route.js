@@ -86,7 +86,7 @@ async function recompressPdf(arrayBuffer, level) {
   return targetDoc.save({
     useObjectStreams: saveOptions.useObjectStreams,
     objectsPerTick: saveOptions.objectsPerTick,
-    updateFieldAppearances: false, // 🚀 Massive speed boost
-    addDefaultPage: false,         // Avoid extra rendering
+    updateFieldAppearances: false,
+    addDefaultPage: false,
   });
 }

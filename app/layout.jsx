@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import Link from "next/link";
 import Script from "next/script";
+import Image from "next/image";
 
 
 const poppins = Poppins({
@@ -191,8 +192,8 @@ export default function RootLayout({ children }) {
           <footer className="w-full bg-gray-50 border-t border-gray-300">
             <div className="max-w-6xl w-full py-10 mx-auto px-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
               {/* About Section */}
-              <div className="col-span-1 lg:col-span-1">
-                <h3 className="text-gray-800 text-xl font-bold mb-4">About PDFClub</h3>
+              <div className="col-span-1 flex flex-col lg:col-span-1">
+                <Image src="/logo.webp" alt="PDFClub Logo" width={100} height={100} className="self-center w-20 mb-4" />
                 <p className="text-gray-600 text-sm mb-4">
                   PDFClub provides free online tools to compress, merge, split, and convert PDF files securely. Fast, easy, and no registration required.
                 </p>
