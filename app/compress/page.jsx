@@ -14,6 +14,7 @@ import {
   Wand2,
   Scissors,
   Layers,
+  Trash,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -209,7 +210,7 @@ export default function CompressPDFPage() {
       resetResultUrl();
 
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', file, file.name);
       formData.append('level', selectedLevel);
 
       const response = await fetch('/api/compress', {
@@ -221,7 +222,9 @@ export default function CompressPDFPage() {
         throw new Error('Compression failed. Please try again.');
       }
 
-      const blob = await response.blob();
+      const arrayBuffer = await response.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+
       const downloadUrl = URL.createObjectURL(blob);
       const originalSizeHeader = Number(response.headers.get('X-Original-Size'));
       const compressedHeader = Number(response.headers.get('X-Compressed-Size'));
@@ -229,6 +232,7 @@ export default function CompressPDFPage() {
       const originalSize = Number.isFinite(originalSizeHeader)
         ? originalSizeHeader
         : file.size;
+
       const compressedSize = Number.isFinite(compressedHeader)
         ? compressedHeader
         : blob.size;
@@ -242,6 +246,7 @@ export default function CompressPDFPage() {
 
       setStatus('success');
       toast.success('PDF compressed successfully');
+
     } catch (err) {
       console.error(err);
       setStatus('error');
@@ -249,6 +254,7 @@ export default function CompressPDFPage() {
       toast.error('Failed to compress PDF');
     }
   };
+
 
   const handleDownload = () => {
     if (!result?.downloadUrl) return;
@@ -263,21 +269,20 @@ export default function CompressPDFPage() {
 
   const renderDropZone = () => (
     <div
-      className="h-full border-2 border-dashed border-slate-300 rounded-3xl p-12 flex flex-col items-center justify-center text-center bg-white/80 backdrop-blur-sm shadow-soft hover:shadow-lg transition-all"
+      className="h-full border-2 border-dashed border-slate-300 rounded-xl cursor-pointer p-12 flex flex-col items-center justify-center text-center bg-white/80 backdrop-blur-sm shadow-soft hover:border-green-500 hover:transition-all"
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onClick={() => fileInputRef.current?.click()}
     >
-      <div className="w-20 h-20 rounded-2xl bg-linear-to-br from-red-500 to-pink-500 flex items-center justify-center mb-6 shadow-lg">
-        <Upload size={36} className="text-white" />
-      </div>
-      <h3 className="text-2xl font-bold text-slate-900 mb-3">Drop your PDF here</h3>
-      <p className="text-slate-500 mb-6">
-        Drag & drop or click to browse. We compress your PDF right in the browser — fast and secure.
+      <Upload size={48} className="mx-auto mb-4 text-gray-400" />
+      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+        Drop PDF file here or click to upload
+      </h3>
+      <p className="text-gray-600 mb-4">
+        Upload multiple PDF file to compress them into one document
       </p>
-      <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-red-500 text-white font-semibold">
-        <Upload size={18} />
-        Select PDF file
+      <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-lg text-sm font-medium">
+        Select PDF Files
       </div>
       <p className="text-sm text-slate-400 mt-4">Max size: 50MB</p>
     </div>
@@ -290,8 +295,8 @@ export default function CompressPDFPage() {
           <p className="text-sm text-slate-500">Selected file</p>
           <p className="font-semibold text-slate-900">{file?.name}</p>
         </div>
-        <button className="text-sm text-slate-400 hover:text-red-500" onClick={removeFile}>
-          Remove
+        <button className="cursor-pointer text-sm text-slate-400 hover:text-red-500" onClick={removeFile}>
+          <Trash size={20} />
         </button>
       </div>
 
@@ -353,7 +358,7 @@ export default function CompressPDFPage() {
                     className="absolute inset-0 border-8 border-red-500 border-t-transparent rounded-full animate-spin"
                   ></div>
                   <span className="absolute inset-0 flex items-center justify-center text-2xl font-semibold text-red-500">
-                    {progress}%
+                    {progress.toFixed(0)}%
                   </span>
                 </div>
                 <p className="text-sm text-slate-500">Compressing PDF...</p>
@@ -375,14 +380,12 @@ export default function CompressPDFPage() {
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-rose-50 py-12">
       <div className="max-w-6xl mx-auto px-4">
         <header className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-red-500 rounded-full mb-4">
-            <Layers size={32} className="text-white" />
-          </div>
+          <p className="text-sm uppercase tracking-[0.3em] text-blue-600 font-semibold mb-3">Compress Club</p>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            PDFClub: The Ultimate PDF Compresser - Compress PDF Online Free
+            Compress PDF Online Free - PDFClub
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-            Use our powerful PDF Compressor to reduce your PDF file size online for free. Our PDF file compressor is designed to shrink your PDFs without compromising quality. With PDFClub, you can minimize your PDF size in seconds and download the compressed file instantly.
+          <p className="text-gray-600 max-w-2xl mx-auto mb-6">
+            Use our powerful PDF Compressor to reduce your PDF file size online for free. Our PDF file compressor is designed to shrink your PDFs without compromising quality. With PDFClub, you can minimize your PDF size in seconds.
           </p>
           <div className="flex flex-wrap justify-center gap-2 text-sm text-gray-500 mb-4">
             <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Compress PDF Online Free</span>
@@ -405,93 +408,89 @@ export default function CompressPDFPage() {
             {file ? renderPreviewPanel() : renderDropZone()}
           </div>
 
-          <div className="space-y-5 sticky top-6">
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-soft p-6">
-              <p className="text-sm font-semibold text-slate-500 mb-4 uppercase tracking-wide">Compression level</p>
-              <div className="space-y-4">
-                {LEVELS.map((level) => (
-                  <button
-                    key={level.id}
-                    className={`w-full text-left rounded-2xl border p-4 transition-all ${selectedLevel === level.id
-                        ? `${level.accent} shadow-[0_10px_30px_rgba(0,0,0,0.05)]`
-                        : 'border-slate-200 hover:border-slate-300'
-                      }`}
-                    onClick={() => setSelectedLevel(level.id)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold text-slate-900">{level.title}</p>
-                        <p className="text-sm text-slate-500 mt-1">{level.description}</p>
-                      </div>
-                      {selectedLevel === level.id && (
-                        <CheckCircle2 className="text-green-500" size={24} />
-                      )}
-                    </div>
-                    <p
-                      className={`text-xs font-semibold uppercase tracking-wide mt-3 ${level.id === 'extreme' ? 'text-red-500' : 'text-slate-500'
+
+          <div className="space-y-5">
+            {
+              file &&
+              <>
+                <div className="bg-white rounded-md border border-slate-200 shadow-soft">
+                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide p-4">Compression level</p>
+                  <div className="">
+                    {LEVELS.map((level) => (
+                      <button
+                        key={level.id}
+                        className={`w-full text-left border p-4 transition-all ${selectedLevel === level.id
+                          ? `${level.accent} shadow-[0_10px_30px_rgba(0,0,0,0.05)]`
+                          : 'border-slate-200 hover:border-slate-300'
+                          }`}
+                        onClick={() => setSelectedLevel(level.id)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-semibold text-slate-900">{level.title}</p>
+                          </div>
+                          {selectedLevel === level.id && (
+                            <CheckCircle2 className="text-green-500" size={24} />
+                          )}
+                        </div>
+                        <p
+                          className={`text-xs font-semibold uppercase tracking-wide mt-3 ${level.id === 'extreme' ? 'text-red-500' : 'text-slate-500'
+                            }`}
+                        >
+                          {level.badge}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 space-y-4">
+                  <h3 className="text-lg font-semibold text-slate-900">Summary</h3>
+                  <div className="space-y-3 text-sm text-slate-600">
+                    <p className="flex items-center justify-between"><span>File size:</span> <span className="font-semibold">{formatBytes(file?.size)}</span></p>
+                    <p className="flex items-center justify-between"><span>Level:</span> <span className="font-semibold text-slate-900 capitalize">{selectedLevel}</span></p>
+                    <p className="flex items-center justify-between"><span>Status:</span> <span className="font-semibold text-slate-900">{status === 'compressing' ? 'Compressing' : status === 'success' ? 'Done' : 'Ready'}</span></p>
+                  </div>
+                </div>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-8">
+                  <div className="flex items-center gap-3 justify-end">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-4 py-3 border border-slate-200 rounded-full text-sm font-semibold text-slate-600 hover:border-slate-300"
+                    >
+                      Choose another file
+                    </button>
+                    <button
+                      onClick={status === 'success' ? handleDownload : compressPdf}
+                      disabled={!file || status === 'compressing'}
+                      className={`inline-flex items-center gap-2 rounded-full px-4 py-3 text-white font-semibold transition-colors ${status === 'success'
+                        ? 'bg-green-500 hover:bg-green-600'
+                        : 'bg-red-500 hover:bg-red-600 disabled:bg-red-300'
                         }`}
                     >
-                      {level.badge}
-                    </p>
-                  </button>
-                ))}
-              </div>
-            </div>
+                      {status === 'success' ? (
+                        <>
+                          <Download size={18} /> Download PDF
+                        </>
+                      ) : status === 'compressing' ? (
+                        <>
+                          <RotateCw className="animate-spin" size={18} /> Compressing...
+                        </>
+                      ) : (
+                        <>
+                          <CompressIcon /> Compress PDF
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </>
+            }
 
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 space-y-4">
-              <h3 className="text-lg font-semibold text-slate-900">Need help?</h3>
-              <ul className="space-y-3 text-sm text-slate-600">
-                <li>• Files stay private and are auto-deleted.</li>
-                <li>• Works on every device—no installation required.</li>
-                <li>• For best results use the recommended level.</li>
-              </ul>
-            </div>
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 space-y-4">
-              <h3 className="text-lg font-semibold text-slate-900">Summary</h3>
-              <div className="space-y-3 text-sm text-slate-600">
-                <p className="flex items-center justify-between"><span>File size:</span> <span className="font-semibold">{formatBytes(file?.size)}</span></p>
-                <p className="flex items-center justify-between"><span>Level:</span> <span className="font-semibold text-slate-900 capitalize">{selectedLevel}</span></p>
-                <p className="flex items-center justify-between"><span>Status:</span> <span className="font-semibold text-slate-900">{status === 'compressing' ? 'Compressing' : status === 'success' ? 'Done' : 'Ready'}</span></p>
-              </div>
-            </div>
+
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-8">
-          <div className="text-sm text-slate-500">
-            {status === 'success' ? 'Compression finished successfully.' : 'Your files stay private and are deleted automatically.'}
-          </div>
-          <div className="flex items-center gap-3 justify-end">
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-3 border border-slate-200 rounded-full text-sm font-semibold text-slate-600 hover:border-slate-300"
-            >
-              Choose another file
-            </button>
-            <button
-              onClick={status === 'success' ? handleDownload : compressPdf}
-              disabled={!file || status === 'compressing'}
-              className={`inline-flex items-center gap-2 rounded-full px-8 py-4 text-white font-semibold transition-colors ${status === 'success'
-                  ? 'bg-green-500 hover:bg-green-600'
-                  : 'bg-red-500 hover:bg-red-600 disabled:bg-red-300'
-                }`}
-            >
-              {status === 'success' ? (
-                <>
-                  <Download size={18} /> Download PDF
-                </>
-              ) : status === 'compressing' ? (
-                <>
-                  <RotateCw className="animate-spin" size={18} /> Compressing...
-                </>
-              ) : (
-                <>
-                  <CompressIcon /> Compress PDF
-                </>
-              )}
-            </button>
-          </div>
-        </div>
+
 
         {status === 'success' && (
           <section className="mt-16">

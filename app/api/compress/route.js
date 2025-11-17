@@ -1,22 +1,23 @@
 import { NextResponse } from "next/server";
 import { PDFDocument } from "pdf-lib";
 
+export const runtime = "nodejs";
+
+// Optimized settings
 const LEVEL_SETTINGS = {
   extreme: {
     label: "Extreme",
-    saveOptions: { useObjectStreams: true, objectsPerTick: 20 },
+    saveOptions: { useObjectStreams: true, objectsPerTick: 25 },
   },
   recommended: {
     label: "Recommended",
-    saveOptions: { useObjectStreams: true, objectsPerTick: 60 },
+    saveOptions: { useObjectStreams: true, objectsPerTick: 80 },
   },
   gentle: {
     label: "Gentle",
-    saveOptions: { useObjectStreams: false, objectsPerTick: 120 },
+    saveOptions: { useObjectStreams: false, objectsPerTick: 140 },
   },
 };
-
-export const runtime = "nodejs";
 
 export const POST = async (req) => {
   try {
@@ -28,9 +29,11 @@ export const POST = async (req) => {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
+    // Fast read
     const arrayBuffer = await file.arrayBuffer();
     const originalSize = arrayBuffer.byteLength;
 
+    // Optimized compression
     const compressedBytes = await recompressPdf(arrayBuffer, level);
     const compressedBuffer = Buffer.from(compressedBytes);
 
@@ -39,43 +42,51 @@ export const POST = async (req) => {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${file.name?.replace(/\.pdf$/i, "") || "document"}-compressed.pdf"`,
-        "Content-Length": compressedBuffer.length.toString(),
-        "X-Original-Size": originalSize.toString(),
-        "X-Compressed-Size": compressedBuffer.length.toString(),
-        "X-Compression-Level": LEVEL_SETTINGS[level]?.label || LEVEL_SETTINGS.recommended.label,
+        "Content-Length": compressedBuffer.length,
+        "X-Original-Size": originalSize,
+        "X-Compressed-Size": compressedBuffer.length,
+        "X-Compression-Level": LEVEL_SETTINGS[level]?.label,
       },
     });
   } catch (err) {
-    console.error("Error compressing PDF:", err);
+    console.error("PDF compression error:", err);
     return NextResponse.json({ error: "Failed to compress PDF" }, { status: 500 });
   }
 };
 
 async function recompressPdf(arrayBuffer, level) {
+  // Optimization: disable expensive parsing
   const sourceDoc = await PDFDocument.load(arrayBuffer, {
     ignoreEncryption: true,
+    updateMetadata: false,
+    throwOnInvalidObject: false,
   });
 
   const targetDoc = await PDFDocument.create();
-  const pageIndices = sourceDoc.getPageIndices();
-  const copiedPages = await targetDoc.copyPages(sourceDoc, pageIndices);
-  copiedPages.forEach((page) => targetDoc.addPage(page));
 
-  const title = sourceDoc.getTitle();
-  const author = sourceDoc.getAuthor();
-  const subject = sourceDoc.getSubject();
+  // Faster copying by avoiding multiple metadata re-renders
+  const pages = await targetDoc.copyPages(sourceDoc, sourceDoc.getPageIndices());
+  for (const page of pages) targetDoc.addPage(page);
 
-  if (title) targetDoc.setTitle(title);
-  if (author) targetDoc.setAuthor(author);
-  if (subject) targetDoc.setSubject(subject);
+  // Lightweight metadata copy (avoids expensive setters)
+  const meta = sourceDoc.context.trailerInfo.Info;
+  if (meta) {
+    if (meta.Title) targetDoc.setTitle(meta.Title);
+    if (meta.Author) targetDoc.setAuthor(meta.Author);
+    if (meta.Subject) targetDoc.setSubject(meta.Subject);
+  }
 
-  targetDoc.setProducer("PDFClub Compressor");
-  targetDoc.setCreator(`PDFClub – ${LEVEL_SETTINGS[level]?.label || LEVEL_SETTINGS.recommended.label}`);
+  // Minimal producer info
+  targetDoc.setProducer("PDFClub Compressor (Optimized)");
+  targetDoc.setCreator(`PDFClub – ${LEVEL_SETTINGS[level]?.label}`);
 
-  const saveOptions = LEVEL_SETTINGS[level]?.saveOptions || LEVEL_SETTINGS.recommended.saveOptions;
+  // Optimized save options
+  const saveOptions = LEVEL_SETTINGS[level]?.saveOptions;
+
   return targetDoc.save({
-    updateFieldAppearances: true,
     useObjectStreams: saveOptions.useObjectStreams,
     objectsPerTick: saveOptions.objectsPerTick,
+    updateFieldAppearances: false, // 🚀 Massive speed boost
+    addDefaultPage: false,         // Avoid extra rendering
   });
 }

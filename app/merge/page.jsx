@@ -114,7 +114,7 @@ export default function MergePDF() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-red-50 via-white to-red-50">
+    <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="text-center mb-8">

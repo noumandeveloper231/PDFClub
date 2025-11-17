@@ -277,12 +277,10 @@ export default function SplitPDF() {
       <div className="w-full px-4 py-8">
         {/* Header */}
         <header className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-4">
-            <Scissors size={32} className="text-white" />
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Split PDF</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Separate one page or a whole set for easy conversion into independent PDF files. Choose how you want to split your document.
+         <p className="text-sm uppercase tracking-[0.3em] text-blue-600 font-semibold mb-3">Split Club</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Split PDF - PDFClub</h1>
+          <p className="text-gray-600 max-w-2xl mx-auto mb-6">
+            Separate one page or a whole set for easy conversion into independent PDF files with <b>PDFClub</b>. Choose how you want to split your document.
           </p>
           <div className="flex flex-wrap justify-center gap-2 text-sm text-gray-500 mb-4">
             <span className="bg-gray-100 px-3 py-1 rounded-full">✓ Split PDF Online</span>
@@ -292,7 +290,7 @@ export default function SplitPDF() {
           </div>
         </header>
 
-        <div className="w-full flex flex-col ">
+        <div className="max-w-4xl mx-auto w-full flex flex-col ">
           {/* File Upload Area */}
           {!file && (
             <div
