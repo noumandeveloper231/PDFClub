@@ -5,6 +5,8 @@ import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import Link from "next/link";
+import Script from "next/script";
+
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -159,11 +161,26 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-KBCWJBBTLW"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-KBCWJBBTLW');
+    `}
+        </Script>
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
+
       <body
         className={`${poppins.variable} ${oswald.variable} antialiased font-poppins`}
       >

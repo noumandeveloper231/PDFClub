@@ -15,33 +15,32 @@ const Navigation = () => {
   };
 
   const navLinks = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/about', label: 'About', icon: Info },
-    { href: '/settings', label: 'Settings', icon: Settings },
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/settings', label: 'Settings' },
   ];
 
   return (
-    <nav className="bg-white/95 backdrop-blur-md border-b border-slate-200/50 px-4 py-4 lg:px-8 sticky top-0 z-50 shadow-soft">
+    <nav className="bg-(--bg-color) backdrop-blur-md border-b border-(--border-color) px-4 py-4 lg:px-8 sticky top-0 z-50 shadow-soft">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-3 font-oswald font-bold text-2xl text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text hover:scale-105 transition-transform duration-200">
+        <Link href="/" className="flex items-center gap-3 font-oswald font-bold text-2xl text-transparent bg-linear-to-r from-(--primary-color) to-(--secondary-color) bg-clip-text hover:scale-105 transition-transform duration-200">
           <Image src="/logo.webp" alt="Logo" width={40} height={40} />
-          <span>PDF Club</span>
+          <span>PDFClub</span>
         </Link>
         
         {/* Desktop Navigation */}
-        <div className="hidden md:flex gap-2">
-          {navLinks.map(({ href, label, icon: Icon }) => (
+        <div className="hidden md:flex gap-8">
+          {navLinks.map(({ href, label }) => (
             <Link 
               key={href}
-              href={href} 
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+              href={href}
+              className={`font-medium transition-all duration-300 ${
                 isActive(href) 
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-glow transform scale-105' 
-                  : 'text-slate-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 hover:scale-105'
+                  ? 'text-(--secondary-color) underline underline-offset-4 '
+                  : 'text-(--white-color) hover:text-(--primary-color) hover:scale-105 hover:-translate-y-0.5'
               }`}
             >
-              <Icon size={18} />
-              <span>{label}</span>
+              {label}
             </Link>
           ))}
         </div>

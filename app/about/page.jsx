@@ -57,8 +57,8 @@ export default function About() {
   return (
     <div className="p-8 max-w-6xl mx-auto w-full">
       <header className="text-center mb-12">
-        <p className="text-sm uppercase tracking-[0.3em] text-blue-600 font-semibold">About PDFClub</p>
-        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+        <p className="text-sm uppercase tracking-[0.3em] text-blue-600 font-semibold mb-3">About PDFClub</p>
+        <h1 className="text-4xl md:text-5xl font-semibold text-slate-900 mb-4">
           Built for every PDF workflow—not just conversions
         </h1>
         <p className="text-lg text-slate-600 max-w-3xl mx-auto">

@@ -268,7 +268,7 @@ export default function CompressPDFPage() {
       onDragOver={handleDragOver}
       onClick={() => fileInputRef.current?.click()}
     >
-      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center mb-6 shadow-lg">
+      <div className="w-20 h-20 rounded-2xl bg-linear-to-br from-red-500 to-pink-500 flex items-center justify-center mb-6 shadow-lg">
         <Upload size={36} className="text-white" />
       </div>
       <h3 className="text-2xl font-bold text-slate-900 mb-3">Drop your PDF here</h3>

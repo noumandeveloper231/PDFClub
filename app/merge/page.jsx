@@ -118,11 +118,9 @@ export default function MergePDF() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-red-500 rounded-full mb-4">
-            <Layers size={32} className="text-white" />
-          </div>
+          <p className="text-sm uppercase tracking-[0.3em] text-blue-600 font-semibold mb-3">Merger Club</p>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Merge PDF Online Free - Combine Multiple PDF Files</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+          <p className="text-gray-600 max-w-2xl mx-auto mb-6">
             Merge PDF online for free with our powerful PDF merger tool. Combine multiple PDF documents into one file instantly. Convert pdf to pdf merge. No registration required, completely secure, and works in your browser.
           </p>
           <div className="flex flex-wrap justify-center gap-2 text-sm text-gray-500 mb-4">
@@ -139,8 +137,8 @@ export default function MergePDF() {
             <div
               {...getRootProps()}
               className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-colors ${isDragActive
-                  ? 'border-red-500 bg-red-50'
-                  : 'border-gray-300 hover:border-red-400 hover:bg-gray-50'
+                ? 'border-red-500 bg-red-50'
+                : 'border-gray-300 hover:border-red-400 hover:bg-gray-50'
                 }`}
             >
               <input {...getInputProps()} />
@@ -288,19 +286,19 @@ export default function MergePDF() {
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Step-by-Step Guide</h3>
                   <ol className="space-y-3 text-gray-600">
                     <li className="flex items-start">
-                      <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">1</span>
+                      <span className="bg-red-500 text-white rounded-full w-12 h-7 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">1</span>
                       <span>Upload multiple PDF files by clicking "Select PDF Files" or drag and drop them</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">2</span>
+                      <span className="bg-red-500 text-white rounded-full w-12 h-7 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">2</span>
                       <span>Arrange the PDFs in your desired order using the up/down arrows</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">3</span>
+                      <span className="bg-red-500 text-white rounded-full w-12 h-7 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">3</span>
                       <span>Click "Merge PDFs" to combine all files into one document</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">4</span>
+                      <span className="bg-red-500 text-white rounded-full w-12 h-7 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">4</span>
                       <span>Download your merged PDF file instantly</span>
                     </li>
                   </ol>
@@ -358,7 +356,7 @@ export default function MergePDF() {
                       answer: "Absolutely! Use the up and down arrow buttons next to each file to rearrange them in your preferred order before clicking \"Merge PDFs\"."
                     }
                   ].map((faq) => (
-                    <div key={faq.id} className="border border-gray-200 rounded-lg">
+                    <div key={faq.id} className="border border-gray-200 rounded-lg transition-all duration-200">
                       <button
                         onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
                         className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
@@ -371,7 +369,7 @@ export default function MergePDF() {
                         )}
                       </button>
                       {openFaq === faq.id && (
-                        <div className="px-4 pb-4">
+                        <div className="px-4 pb-4 pt-3">
                           <p className="text-gray-600">{faq.answer}</p>
                         </div>
                       )}
