@@ -45,13 +45,13 @@ const Navigation = () => {
           ))}
           <Link href="/privacy-policy" className={`font-medium transition-all duration-300 ${isActive('/privacy-policy')
             ? 'text-(--secondary-color) underline underline-offset-4 '
-            : 'text-gray-400 hover:text-(--primary-color) hover:scale-105 hover:-translate-y-0.5'
+            : 'text-gray-700 hover:text-(--primary-color) hover:scale-105 hover:-translate-y-0.5'
             }`} >
             Privacy Policy
           </Link>
           <Link href="/terms-of-service" className={`font-medium transition-all duration-300 ${isActive('/terms-of-service')
             ? 'text-(--secondary-color) underline underline-offset-4 '
-            : 'text-gray-400 hover:text-(--primary-color) hover:scale-105 hover:-translate-y-0.5'
+            : 'text-gray-700 hover:text-(--primary-color) hover:scale-105 hover:-translate-y-0.5'
             }`}>
             Terms of Service
           </Link>
