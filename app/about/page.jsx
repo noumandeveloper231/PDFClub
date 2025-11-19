@@ -1,5 +1,20 @@
 import { FileText, Zap, Shield, Clock } from 'lucide-react';
 
+export const metadata = {
+  title: 'About PDFClub - Free Online PDF Tools',
+  description: 'Learn about PDFClub, our mission, and the suite of free PDF tools we provide online.',
+  keywords: 'pdf tools, about pdfclub, free online pdf tools, merge pdf, split pdf, compress pdf',
+  openGraph: {
+    title: 'About PDFClub',
+    description: 'Learn about PDFClub, our mission, and the suite of free PDF tools we provide online.',
+    type: 'website',
+    url: 'https://pdfclub.online/about',
+  },
+  alternates: {
+    canonical: 'https://pdfclub.online/about',
+  },
+};
+
 const pillars = [
   {
     icon: Zap,
@@ -115,14 +130,14 @@ export default function About() {
 
       <section className="mb-16">
         <h2 className="text-3xl font-bold text-center text-slate-900 mb-8">Platform snapshot</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <dl className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {stats.map(({ label, value }) => (
             <div key={label} className="bg-white p-6 rounded-xl border border-slate-200 text-center shadow-sm">
-              <p className="text-3xl font-bold text-slate-900 mb-1">{value}</p>
-              <p className="text-slate-500 text-sm uppercase tracking-wide">{label}</p>
+              <dt className="text-3xl font-bold text-slate-900 mb-1">{value}</dt>
+              <dt className="text-slate-500 text-sm uppercase tracking-wide">{label}</dt>
             </div>
           ))}
-        </div>
+        </dl>
       </section>
 
       <section className="mb-16">

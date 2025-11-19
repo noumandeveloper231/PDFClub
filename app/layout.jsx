@@ -2,14 +2,13 @@ import { Poppins, Oswald } from "next/font/google";
 import "./globals.css";
 import Navigation from "./components/Navigation";
 import { Toaster } from "react-hot-toast";
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Link from "next/link";
 import Script from "next/script";
 import Image from "next/image";
-import Head from "next/head";
 
-
+// Fonts
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -22,58 +21,54 @@ const oswald = Oswald({
   variable: "--font-oswald",
 });
 
+// Viewport
 export const viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
-}
+};
 
+// Metadata
 export const metadata = {
-  title: 'Free PDF Merge & Split Tools Online - Combine & Separate PDF Files',
-  description: 'Free online PDF tools to merge multiple PDFs into one file or split large PDFs into separate pages. Fast, secure, and no registration required. Works in your browser.',
-  keywords: 'merge pdf, split pdf, combine pdf, pdf merger, pdf splitter, online pdf tools, free pdf tools',
-  author: 'PDF Tools Online',
-  robots: 'index, follow',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
+  title: "Free PDF Merge & Split Tools Online - Combine & Separate PDF Files",
+  description:
+    "Free online PDF tools to merge multiple PDFs into one file or split large PDFs into separate pages. Fast, secure, and no registration required.",
+  keywords:
+    "merge pdf, split pdf, combine pdf, pdf merger, pdf splitter, online pdf tools, free pdf tools",
+  author: "PDF Tools Online",
+  formatDetection: { email: false, address: false, telephone: false },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
-      { url: '/logo.webp', sizes: '192x192', type: 'image/webp' },
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
+      { url: "/logo.webp", sizes: "192x192", type: "image/webp" },
     ],
-    apple: [
-      { url: '/logo.webp', sizes: '180x180', type: 'image/webp' },
-    ],
-    shortcut: '/favicon.ico',
+    apple: [{ url: "/logo.webp", sizes: "180x180", type: "image/webp" }],
+    shortcut: "/favicon.ico",
   },
-  metadataBase: new URL('https://pdfclub.online'),
-  alternates: {
-    canonical: '/',
-  },
+  metadataBase: new URL("https://pdfclub.online"),
+  alternates: { canonical: "https://pdfclub.online" },
   openGraph: {
     title: "PDFClub – Free PDF Tools",
-    description: "Fast, free, and private PDF tools online. Convert PDF to Word, compress, merge, and split documents instantly.",
-    url: 'https://pdfclub.online',
-    siteName: 'PDFClub',
+    description:
+      "Fast, free, and private PDF tools online. Convert PDF to Word, compress, merge, and split documents instantly.",
+    url: "https://pdfclub.online",
+    siteName: "PDFClub",
     images: [
       {
-        url: 'https://pdfclub.online/og-image.png',
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: 'PDFClub - Free PDF Tools Online',
-      }
+        alt: "PDFClub - Free PDF Tools Online",
+      },
     ],
-    locale: 'en_US',
-    type: 'website',
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: "PDFClub – Free PDF Tools",
     description: "Convert and manage PDFs instantly online. Fast, free, and secure.",
-    images: ['https://pdfclub.online/og-image.png'],
-    creator: '@pdfclub',
+    images: ["/og-image.png"],
+    creator: "@pdfclub",
   },
   robots: {
     index: true,
@@ -81,15 +76,15 @@ export const metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   verification: {
-    google: 'Qzn2y3b_QvyrBKdiQHgXxXYMSCAaKktNnhjl8JyHsa0',
-    yandex: 'a2b9c989ef8ce275',
-    yahoo: '4381B1C5349384186D59C3DD02256449',
+    google: "Qzn2y3b_QvyrBKdiQHgXxXYMSCAaKktNnhjl8JyHsa0",
+    yandex: "a2b9c989ef8ce275",
+    yahoo: "4381B1C5349384186D59C3DD02256449",
   },
 };
 
@@ -97,173 +92,178 @@ export default function RootLayout({ children }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "PDFClub",
-    "description": "Free online PDF tools for everyone. Convert PDF to Word, compress PDFs, merge & split documents.",
-    "url": "https://pdfclub.online",
-    "logo": "https://pdfclub.online/og-image.png",
-    "sameAs": [
+    name: "PDFClub",
+    description:
+      "Free online PDF tools for everyone. Convert PDF to Word, compress PDFs, merge & split documents.",
+    url: "https://pdfclub.online",
+    logo: "https://pdfclub.online/og-image.png",
+    sameAs: [
       "https://twitter.com/pdfclub",
       "https://facebook.com/pdfclub",
-      "https://linkedin.com/company/pdfclub"
+      "https://linkedin.com/company/pdfclub",
     ],
-    "contactPoint": {
+    contactPoint: {
       "@type": "ContactPoint",
-      "contactType": "customer service",
-      "availableLanguage": "English"
+      contactType: "customer service",
+      availableLanguage: "English",
     },
-    "serviceType": "PDF Tools",
-    "areaServed": "Worldwide",
-    "offers": {
+    offers: {
       "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD",
-      "description": "Free PDF conversion and editing tools",
-      "availability": "https://schema.org/InStock"
+      price: "0",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
     },
-    "hasOfferCatalog": {
+    hasOfferCatalog: {
       "@type": "OfferCatalog",
-      "name": "PDF Tools",
-      "itemListElement": [
+      name: "PDF Tools",
+      itemListElement: [
         {
           "@type": "Offer",
-          "itemOffered": {
+          itemOffered: {
             "@type": "Service",
-            "name": "PDF Compression",
-            "description": "Reduce PDF file size while maintaining quality"
-          }
+            name: "PDF Compression",
+          },
         },
         {
           "@type": "Offer",
-          "itemOffered": {
+          itemOffered: {
             "@type": "Service",
-            "name": "PDF Merge",
-            "description": "Combine multiple PDF files into one document"
-          }
+            name: "PDF Merge",
+          },
         },
         {
           "@type": "Offer",
-          "itemOffered": {
+          itemOffered: {
             "@type": "Service",
-            "name": "PDF Split",
-            "description": "Split PDF documents into separate pages or sections"
-          }
-        }
-      ]
-    }
+            name: "PDF Split",
+          },
+        },
+      ],
+    },
   };
 
   return (
     <html lang="en">
-      <Head>
+      {/* ✔ No <head> tag — Next.js inserts its own */}
+      <body className={`${poppins.variable} ${oswald.variable} antialiased font-poppins`}>
+        {/* --------------------------------------------- */}
+        {/* SEO Scripts + JSON-LD                        */}
+        {/* --------------------------------------------- */}
+
+        {/* Preconnect */}
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+
+        {/* Preload font for speed */}
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          as="style"
+        />
+
+        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-KBCWJBBTLW"
           strategy="afterInteractive"
         />
-
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="ga" strategy="afterInteractive">
           {`
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-KBCWJBBTLW');
-    `}
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-KBCWJBBTLW');
+        `}
         </Script>
 
-        <script
+        {/* Organization Schema */}
+        <Script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </Head>
 
-      <body
-        className={`${poppins.variable} ${oswald.variable} antialiased font-poppins`}
-      >
+        {/* WebSite Schema */}
+        <Script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "PDFClub",
+              url: "https://pdfclub.online",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://pdfclub.online/search?q={search}",
+                "query-input": "required name=search",
+              },
+            }),
+          }}
+        />
+
+        {/* --------------------------------------------- */}
+        {/* Main Layout                                   */}
+        {/* --------------------------------------------- */}
+
         <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 to-blue-50">
           <Navigation />
           <main className="flex-1 p-4 md:p-3 lg:p-0">{children}</main>
 
+          {/* Footer */}
           <footer className="w-full bg-gray-50 border-t border-gray-300">
-            <div className="max-w-6xl w-full py-10 mx-auto px-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
-              {/* About Section */}
-              <div className="col-span-1 flex flex-col lg:col-span-1">
-                <Image src="/logo.webp" alt="PDFClub Logo" width={100} height={100} className="self-center w-20 mb-4" />
+            <div className="max-w-6xl mx-auto py-10 px-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+
+              <div>
+                <Image src="/logo.webp" alt="PDFClub Logo" width={100} height={100} className="w-20 mb-4" />
                 <p className="text-gray-600 text-sm mb-4">
-                  PDFClub provides free online tools to compress, merge, split, and convert PDF files securely. Fast, easy, and no registration required.
+                  PDFClub provides free online tools to compress, merge, split, and convert PDF files securely.
                 </p>
                 <ul className="space-y-2 text-gray-600 text-sm">
-                  <li><Link href="/about" className="hover:text-blue-600">About Us</Link></li>
-                  <li><Link href="/terms-of-service" className="hover:text-blue-600">Terms of Service</Link></li>
-                  <li><Link href="/privacy-policy" className="hover:text-blue-600">Privacy Policy</Link></li>
-                  <li><Link href="/faq" className="hover:text-blue-600">FAQ</Link></li>
+                  <li><Link href="/about">About</Link></li>
+                  <li><Link href="/terms-of-service">Terms of Service</Link></li>
+                  <li><Link href="/privacy-policy">Privacy Policy</Link></li>
+                  <li><Link href="/faq">FAQ</Link></li>
                 </ul>
               </div>
 
-              {/* Tools Section */}
-              <div className="col-span-1 lg:col-span-1">
+              <div>
                 <h3 className="text-gray-800 text-xl font-bold mb-4">Tools</h3>
                 <ul className="space-y-2 text-gray-600 text-sm">
-                  <li><Link href="/compress" className="hover:text-blue-600">Compress PDF</Link></li>
-                  <li><Link href="/merge" className="hover:text-blue-600">Merge PDF</Link></li>
-                  <li><Link href="/split" className="hover:text-blue-600">Split PDF</Link></li>
+                  <li><Link href="/compress">Compress PDF</Link></li>
+                  <li><Link href="/merge">Merge PDF</Link></li>
+                  <li><Link href="/split">Split PDF</Link></li>
                 </ul>
               </div>
 
-              {/* Contact Section */}
-              <div className="col-span-1 lg:col-span-1">
+              <div>
                 <h3 className="text-gray-800 text-xl font-bold mb-4">Contact</h3>
                 <ul className="space-y-2 text-gray-600 text-sm">
-                  <li><Link href="/contact-us" className="hover:text-blue-600">Contact Us</Link></li>
-                  <li><Link href="/about/team" className="hover:text-blue-600">Our Team</Link></li>
-                  <li><a href="mailto:support@pdfclub.online" className="hover:text-blue-600">support@pdfclub.online</a></li>
-                  <li><Link href="/careers" className="hover:text-blue-600">Careers</Link></li>
+                  <li><Link href="/contact-us">Contact Us</Link></li>
+                  <li><Link href="/about/team">Our Team</Link></li>
+                  <li><a href="mailto:support@pdfclub.online">support@pdfclub.online</a></li>
+                  <li><Link href="/careers">Careers</Link></li>
                 </ul>
               </div>
 
-              {/* Social Section */}
-              <div className="col-span-1 lg:col-span-1">
+              <div>
                 <h3 className="text-gray-800 text-xl font-bold mb-4">Follow Us</h3>
                 <ul className="flex flex-col space-y-2 text-gray-600 text-sm">
-                  <li><a href="https://twitter.com/pdfclub" target="_blank" className="hover:text-blue-600">Twitter</a></li>
-                  <li><a href="https://facebook.com/pdfclub" target="_blank" className="hover:text-blue-600">Facebook</a></li>
-                  <li><a href="https://linkedin.com/company/pdfclub" target="_blank" className="hover:text-blue-600">LinkedIn</a></li>
-                  <li><a href="https://youtube.com/pdfclub" target="_blank" className="hover:text-blue-600">YouTube</a></li>
+                  <li><a href="https://twitter.com/pdfclub">Twitter</a></li>
+                  <li><a href="https://facebook.com/pdfclub">Facebook</a></li>
+                  <li><a href="https://linkedin.com/company/pdfclub">LinkedIn</a></li>
+                  <li><a href="https://youtube.com/pdfclub">YouTube</a></li>
                 </ul>
               </div>
             </div>
 
-            {/* Bottom */}
             <div className="py-5 border-t border-gray-300 text-center text-gray-500 text-sm">
               <p>© {new Date().getFullYear()} PDFClub. All rights reserved.</p>
             </div>
           </footer>
-
         </div>
 
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: "#1e293b",
-              color: "#f8fafc",
-              fontFamily: "var(--font-poppins)",
-            },
-            success: {
-              iconTheme: {
-                primary: "#10b981",
-                secondary: "#f8fafc",
-              },
-            },
-            error: {
-              iconTheme: {
-                primary: "#ef4444",
-                secondary: "#f8fafc",
-              },
-            },
-          }}
-        />
+        <Toaster position="top-right" />
 
-        {/* ✅ Place Analytics here */}
+        {/* Vercel Analytics */}
         <Analytics />
         <SpeedInsights />
       </body>

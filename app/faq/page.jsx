@@ -1,4 +1,18 @@
-import Script from 'next/script'
+export const metadata = {
+  title: 'FAQ - PDFClub Free Online PDF Tools',
+  description: 'Frequently asked questions about PDFClub tools: compress, merge, split, convert, and secure PDFs online.',
+  keywords: 'pdf faq, pdf tools faq, pdfclub faq, merge pdf faq, split pdf faq, compress pdf faq',
+  openGraph: {
+    title: 'FAQ - PDFClub',
+    description: 'Get answers to frequently asked questions about PDFClub online PDF tools.',
+    type: 'website',
+    url: 'https://pdfclub.online/faq',
+  },
+  alternates: {
+    canonical: 'https://pdfclub.online/faq',
+  },
+};
+
 
 const FAQs = () => {
     const pdfFaqs = [
@@ -69,14 +83,14 @@ const FAQs = () => {
             <div className="space-y-3 bg-white border border-gray-200 rounded-lg p-4">
                 {pdfFaqs.map((faq) => (
                     <details key={faq.id} className="border bg-gray-50 border-gray-200 rounded-lg p-4">
-                        <summary className="font-medium text-gray-900 cursor-pointer">
+                        <summary aria-expanded className="font-medium text-gray-900 cursor-pointer">
                             {faq.question}
                         </summary>
                         <p className="mt-2 text-gray-600">{faq.answer}</p>
                     </details>
                 ))}
             </div>
-            <Script id="faq-schema" type="application/ld+json">
+            <script id="faq-schema" type="application/ld+json">
                 {JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "FAQPage",
@@ -89,7 +103,7 @@ const FAQs = () => {
                         },
                     })),
                 })}
-            </Script>
+            </script>
         </div>
     )
 }

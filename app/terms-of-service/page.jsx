@@ -5,7 +5,7 @@ export const metadata = {
   description:
     "Read PDFClub's Terms of Service covering acceptable use, user responsibilities, warranties, limitations of liability, and governing law.",
   alternates: {
-    canonical: "/terms-of-service",
+    canonical: "https://pdfclub.online/terms-of-service",
   },
 };
 
