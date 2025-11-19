@@ -21,7 +21,10 @@ module.exports = {
       '/': 1.0,
       '/merge': 0.9,
       '/split': 0.9,
+      '/compress': 0.9,
       '/about': 0.7,
+      '/privacy-policy': 0.7,
+      '/terms-of-service': 0.7,
       '/settings': 0.5,
     };
 

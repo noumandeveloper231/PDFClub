@@ -202,23 +202,9 @@ export default function RootLayout({ children }) {
               <div className="col-span-1 lg:col-span-1">
                 <h3 className="text-gray-800 text-xl font-bold mb-4">Tools</h3>
                 <ul className="space-y-2 text-gray-600 text-sm">
-                  <li><Link href="/pdf-to-word" className="hover:text-blue-600">PDF to Word</Link></li>
-                  <li><Link href="/compress-pdf" className="hover:text-blue-600">Compress PDF</Link></li>
-                  <li><Link href="/merge-pdf" className="hover:text-blue-600">Merge PDF</Link></li>
-                  <li><Link href="/split-pdf" className="hover:text-blue-600">Split PDF</Link></li>
-                  <li><Link href="/pdf-to-image" className="hover:text-blue-600">PDF to Image</Link></li>
-                  <li><Link href="/image-to-pdf" className="hover:text-blue-600">Image to PDF</Link></li>
-                </ul>
-              </div>
-
-              {/* Resources Section */}
-              <div className="col-span-1 lg:col-span-1">
-                <h3 className="text-gray-800 text-xl font-bold mb-4">Resources</h3>
-                <ul className="space-y-2 text-gray-600 text-sm">
-                  <li><Link href="/blog" className="hover:text-blue-600">Blog</Link></li>
-                  <li><Link href="/guides" className="hover:text-blue-600">Guides</Link></li>
-                  <li><Link href="/tools-tutorials" className="hover:text-blue-600">Tutorials</Link></li>
-                  <li><Link href="/support" className="hover:text-blue-600">Support</Link></li>
+                  <li><Link href="/compress" className="hover:text-blue-600">Compress PDF</Link></li>
+                  <li><Link href="/merge" className="hover:text-blue-600">Merge PDF</Link></li>
+                  <li><Link href="/split" className="hover:text-blue-600">Split PDF</Link></li>
                 </ul>
               </div>
 
