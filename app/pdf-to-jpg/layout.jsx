@@ -3,7 +3,7 @@ export const metadata = {
   description:
     'Free online tool to convert PDF pages into JPG images. Fast, secure, and easy to use. Adjust quality and resolution. Download individually or as ZIP.',
   keywords:
-    'pdf to jpg, convert pdf to image, pdf to jpeg, pdf image converter, pdfclub, pdf to jpg online',
+    'pdf to jpg, convert pdf to image, pdf to jpeg, pdf image converter, pdfclub, pdf to jpg online, pdfclub',
   openGraph: {
     title: 'PDF to JPG Converter – Free Online Tool',
     description: 'Convert PDF pages into JPG images instantly. 100% free and secure.',

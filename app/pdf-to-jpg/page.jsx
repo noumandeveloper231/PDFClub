@@ -32,7 +32,7 @@ export default function PDFToJPGPage() {
             {faqs.map((faq) => (
               <details key={faq.id} className="border border-gray-200 rounded-lg p-4">
                 <summary className="font-medium text-gray-900 cursor-pointer">{faq.question}</summary>
-                <p className="mt-2 text-gray-600">{faq.answer}</p>
+                <p className="mt-3 text-gray-600">{faq.answer}</p>
               </details>
             ))}
           </div>
