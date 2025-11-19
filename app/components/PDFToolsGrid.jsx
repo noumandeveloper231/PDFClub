@@ -51,9 +51,9 @@ const PDFToolsGrid = () => {
                   <IconComponent size={24} className="text-white" />
                 </div>
                 
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-red-600 transition-colors">
+                <h2 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-red-600 transition-colors">
                   {tool.title}
-                </h3>
+                </h2>
                 
                 <p className="text-sm text-gray-600 leading-relaxed">
                   {tool.description}
