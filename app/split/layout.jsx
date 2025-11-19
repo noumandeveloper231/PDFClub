@@ -17,11 +17,11 @@ export default function SplitLayout({ children }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "PDF Splitter Online | PDFClub",
+    "name": "PDF Splitter Online Pdf Assist Tool | PDFClub",
     "description": "Free online tool to split PDF documents into separate pages or extract page ranges",
     "url": "https://pdfclub.online/split",
-    "applicationCategory": "UtilityApplication",
-    "operatingSystem": "Web Browser",
+    "applicationCategory": "Utility",
+    "operatingSystem": "Web",
     "offers": {
       "@type": "Offer",
       "price": "0",

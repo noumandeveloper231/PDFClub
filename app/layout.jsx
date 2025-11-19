@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import Link from "next/link";
 import Script from "next/script";
 import Image from "next/image";
+import Head from "next/head";
 
 
 const poppins = Poppins({
@@ -127,14 +128,6 @@ export default function RootLayout({ children }) {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "PDF to Word Conversion",
-            "description": "Convert PDF documents to editable Word format"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
             "name": "PDF Compression",
             "description": "Reduce PDF file size while maintaining quality"
           }
@@ -161,7 +154,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <head>
+      <Head>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-KBCWJBBTLW"
           strategy="afterInteractive"
@@ -180,7 +173,7 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
+      </Head>
 
       <body
         className={`${poppins.variable} ${oswald.variable} antialiased font-poppins`}

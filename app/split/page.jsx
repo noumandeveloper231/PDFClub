@@ -18,7 +18,6 @@ const Page = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Page 
 
 export default function SplitPDF() {
   const [file, setFile] = useState(null);
-  const [splitMethod, setSplitMethod] = useState('pages'); // 'pages', 'range', 'size'
   const [splitOptions, setSplitOptions] = useState({
     pagesPerFile: 1,
     pageRanges: '',
