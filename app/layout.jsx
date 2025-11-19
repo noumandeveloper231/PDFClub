@@ -138,6 +138,13 @@ export default function RootLayout({ children }) {
             name: "PDF Split",
           },
         },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "PDF to JPG",
+          },
+        },
       ],
     },
   };
@@ -231,6 +238,7 @@ export default function RootLayout({ children }) {
                     <li><Link href="/compress">Compress PDF</Link></li>
                     <li><Link href="/merge">Merge PDF</Link></li>
                     <li><Link href="/split">Split PDF</Link></li>
+                    <li><Link href="/pdf-to-jpg">PDF to JPG</Link></li>
                   </ul>
                 </div>
 

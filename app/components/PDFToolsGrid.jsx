@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { 
   Scissors, 
   Layers,
-  Folder
+  Folder,
+  Image
 } from 'lucide-react';
 
 const PDFToolsGrid = () => {
@@ -32,6 +33,14 @@ const PDFToolsGrid = () => {
       icon: Folder,
       color: 'bg-green-500',
       href: '/compress'
+    },
+    {
+      id: 'pdf-to-jpg',
+      title: 'Convert PDF to JPG',
+      description: 'Convert PDF files to JPG format images.',
+      icon: Image,
+      color: 'bg-yellow-500',
+      href: '/pdf-to-jpg'
     }
   ];
 
