@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { 
   Scissors, 
@@ -8,7 +6,7 @@ import {
   Image
 } from 'lucide-react';
 
-const PDFToolsGrid = () => {
+const PDFToolsGrid = ({limit}) => {
   const tools = [
     {
       id: 'merge',
@@ -44,10 +42,14 @@ const PDFToolsGrid = () => {
     }
   ];
 
+  if (!limit || limit > tools.length) {
+    limit = tools.length;
+  }
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mx-auto">
-        {tools.map((tool) => {
+        {tools.slice(0, limit).map((tool) => {
           const IconComponent = tool.icon;
           return (
             <Link 

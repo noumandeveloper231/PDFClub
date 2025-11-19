@@ -119,7 +119,7 @@ const Navigation = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md border-b border-slate-200/50 shadow-soft animate-slide-up">
           <div className="px-4 py-4 space-y-2">
-            {navLinks.map(({ href, label, icon: Icon }) => (
+            {navLinks.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
@@ -129,7 +129,6 @@ const Navigation = () => {
                   }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <Icon size={18} />
                 <span>{label}</span>
               </Link>
             ))}

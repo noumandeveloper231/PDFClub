@@ -103,11 +103,6 @@ const CompressionComponent = () => {
         }
     }, []);
 
-    const currentLevel = useMemo(
-        () => LEVELS.find((level) => level.id === selectedLevel),
-        [selectedLevel],
-    );
-
     useEffect(() => {
         if (status === 'compressing') {
             setProgress(10);
@@ -385,11 +380,10 @@ const CompressionComponent = () => {
                 onChange={handleFileSelection}
             />
 
-            <div className="grid lg:grid-cols-[2fr_1fr] gap-8 items-start">
+            <div className={`grid ${file ? 'lg:grid-cols-[2fr_1fr]' : 'grid-cols-1'} gap-8 items-start`}>
                 <div className="min-h-[600px]">
                     {file ? renderPreviewPanel() : renderDropZone()}
                 </div>
-
 
                 <div className="space-y-5">
                     {
