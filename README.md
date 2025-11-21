@@ -1,6 +1,6 @@
-# OnClickPDF - PDF to DOCX Converter
+# PDFClub - PDF Converter
 
-A modern, secure, and fast PDF to DOCX converter built with Next.js 16 and powered by Convert API.
+A modern, secure, and fast PDF converter built with Next.js 16 and powered by Convert API.
 
 ## Features
 
@@ -29,43 +29,10 @@ A modern, secure, and fast PDF to DOCX converter built with Next.js 16 and power
 
 ### Installation
 
-1. Clone the repository:
-```bash
-git clone <your-repo-url>
-cd onclickpdf
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Set up environment variables:
-```bash
-# Copy the example environment file
-cp env.example .env.local
-
-# Edit .env.local and add your Convert API key:
-CONVERT_API_PRODUCTION_KEY=your_convert_api_key_here
-NEXT_PUBLIC_API_URL=http://localhost:3000
-```
-
-4. Create required directories:
-```bash
-mkdir uploads downloads
-```
-
-5. Run the development server:
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to see the application.
-
 ## Project Structure
 
 ```
-onclickpdf/
+pdfclub/
 ├── app/
 │   ├── api/
 │   │   ├── upload/          # File upload endpoint
