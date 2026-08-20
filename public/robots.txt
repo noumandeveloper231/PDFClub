@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /temp/
+Disallow: /uploads/
+Disallow: /downloads/
+
+# Host
+Host: https://pdfclub.online
+
+# Sitemaps
+Sitemap: https://pdfclub.online/sitemap.xml
